@@ -1,0 +1,26 @@
+{
+  "name": "tw-agent-skills",
+  "owner": {
+    "name": "Trust Wallet",
+    "email": "developer@trustwallet.com"
+  },
+  "metadata": {
+    "description": "Open source Claude Code skills for Trust Wallet & Web3 developers",
+    "version": "1.0.0"
+  },
+  "plugins": [
+    {
+      "name": "web3-skills",
+      "description": "Skills for building with Trust Wallet's Web3 libraries and developer platform",
+      "source": "./",
+      "strict": false,
+      "skills": [
+        "./skills/trust-web3-provider",
+        "./skills/wallet-core",
+        "./skills/assets",
+        "./skills/barz",
+        "./skills/trust-developer"
+      ]
+    }
+  ]
+}
