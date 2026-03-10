@@ -1,0 +1,26 @@
+{
+  "name": "@trustwallet/tw-agent-skills",
+  "version": "0.1.0",
+  "description": "Trust Wallet API skills for AI agents — wallet, transfers, swaps, DCA, limit orders, alerts, balance, market data, history, security, and on/off-ramp across 100+ chains",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/trustwallet/tw-agent-skills"
+  },
+  "keywords": [
+    "trust-wallet",
+    "crypto",
+    "blockchain",
+    "ai-agent",
+    "skills",
+    "mcp",
+    "langchain",
+    "swap",
+    "defi"
+  ],
+  "files": [
+    "skills/",
+    "README.md",
+    "LICENSE"
+  ]
+}
