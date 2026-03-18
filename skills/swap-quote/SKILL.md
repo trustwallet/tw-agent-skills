@@ -1,13 +1,13 @@
 ---
 name: swap-quote
-description: Get swap quotes and transaction data for token swaps across any chain — same-chain and cross-chain via the Amber aggregator with 10+ DEX and bridge providers including 1inch, Jupiter, KyberSwap, THORChain, Stargate, and more.
+description: Get swap quotes and transaction data for token swaps across any chain — same-chain and cross-chain via the Amber aggregator with 10+ DEX and bridge providers including 1inch, Jupiter, KyberSwap, THORChain, Stargate, and more. Use this whenever someone wants to swap tokens, bridge between chains, get a swap quote, compare DEX rates, or execute any kind of token exchange.
 ---
 
 # Swap Quotes
 
 Get quotes and transaction data for same-chain and cross-chain token swaps via the Amber aggregator.
 
-**Base URL:** `https://api.trustwallet.com`
+**Base URL:** `https://tws.trustwallet.com`
 **Auth:** HMAC-SHA256 (see [setup](../setup/SKILL.md))
 
 ## Providers
@@ -44,7 +44,7 @@ The Amber aggregator routes through 10+ DEX and bridge providers plus its own Li
 
 ### Domain IDs
 
-The Amber API uses **domain IDs** to identify chains. Use the domains endpoint to get the full list, or refer to common ones:
+The Amber API uses **domain IDs** to identify chains. Common ones:
 
 | Domain ID | Chain |
 |-----------|-------|
@@ -67,41 +67,27 @@ The Amber API uses **domain IDs** to identify chains. Use the domains endpoint t
 
 ## Endpoints
 
-### List Supported Domains
+### List Domains
 
-`GET /amber-api/v1/domains`
+`GET /amber-api/v1/domains?ton=true`
 
-Get the list of chains (domains) supported by the Amber aggregator, along with which DEX providers are available on each chain.
-
-**Example request:**
-
-```
-GET /amber-api/v1/domains
-```
+Get all supported chain domains with chain IDs, finality times, and available DEX providers per chain. Pass `ton=true` to include TON.
 
 **Response:**
 
 ```json
-[
-  {
-    "id": "ethereum",
-    "name": "Ethereum",
-    "coinId": 60,
-    "dex": ["rango", "1inch", "kyber", "zeroex"]
-  },
-  {
-    "id": "solana",
-    "name": "Solana",
-    "coinId": 501,
-    "dex": ["jupiter", "rango"]
-  },
-  {
-    "id": "bitcoin",
-    "name": "Bitcoin",
-    "coinId": 0,
-    "dex": ["thorchain"]
-  }
-]
+{
+  "domains": [
+    {
+      "id": "ethereum",
+      "name": "Ethereum",
+      "type": "EVM",
+      "chainId": "0x1",
+      "finalityTime": "60",
+      "dex": ["1inch", "kyberswap", "0x"]
+    }
+  ]
+}
 ```
 
 ---
@@ -110,36 +96,23 @@ GET /amber-api/v1/domains
 
 `GET /amber-api/v1/providers`
 
-Get the list of all DEX and bridge providers supported by the Amber aggregator.
+Get all available swap and bridge providers.
 
-**Example request:**
+---
 
-```
-GET /amber-api/v1/providers
-```
+### Get Bridge Provider
 
-**Response:**
+`GET /amber-api/v1/providers/bridge/{id}`
 
-```json
-{
-  "dex": [
-    { "id": "1inch", "name": "1inch Network", "rank": 5 },
-    { "id": "kyber", "name": "KyberSwap", "rank": 3 },
-    { "id": "zeroex", "name": "0x", "rank": 4 },
-    { "id": "jupiter", "name": "Jupiter", "rank": 4 },
-    { "id": "thorchain", "name": "THORChain", "rank": 3 }
-  ],
-  "bridge": [
-    { "id": "stargate", "name": "Stargate Finance", "rank": 4 },
-    { "id": "synapse", "name": "Synapse Protocol", "rank": 3 },
-    { "id": "squid", "name": "Squid Router", "rank": 3 },
-    { "id": "rango", "name": "Rango Exchange", "rank": 3 },
-    { "id": "swft", "name": "SWFT Bridgers", "rank": 2 }
-  ]
-}
-```
+Get details for a specific bridge provider by ID.
 
-You can use provider IDs in the route request to filter preferred or ignored providers.
+---
+
+### Get DEX Provider
+
+`GET /amber-api/v1/providers/dex/{id}`
+
+Get details for a specific DEX provider by ID.
 
 ---
 

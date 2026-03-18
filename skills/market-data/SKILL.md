@@ -1,6 +1,6 @@
 ---
 name: market-data
-description: Get real-time token prices (index from CoinMarketCap + CoinGecko), discover trending tokens across 16+ categories (AI, DeFi, memes, Layer 1, ecosystem-specific), with multi-timeframe price changes, market cap, volume, and supply data.
+description: Get real-time token prices (index from CoinMarketCap + CoinGecko), discover trending tokens across 16+ categories (AI, DeFi, memes, Layer 1, ecosystem-specific), with multi-timeframe price changes, market cap, volume, and supply data. Use this whenever someone asks about crypto prices, market cap, volume, trending coins, top tokens in a category, or any "what's the price of X" question.
 ---
 
 # Market Data
@@ -13,10 +13,10 @@ Real-time token prices, trending asset discovery, and category-based rankings.
 
 `POST /v2/market/tickers`
 
-Get current USD prices for one or more tokens. Prices are aggregated from CoinMarketCap and CoinGecko, serving as an index price. This endpoint is public and requires **no authentication**.
+Get current USD prices for one or more tokens. Prices are aggregated from CoinMarketCap and CoinGecko, serving as an index price.
 
-**Base URL:** `https://market.trustwallet.com`
-**Auth:** None
+**Base URL:** `https://tws.trustwallet.com`
+**Auth:** HMAC-SHA256 (see [setup](../setup/SKILL.md))
 
 **Request body:**
 
@@ -60,7 +60,7 @@ Get current USD prices for one or more tokens. Prices are aggregated from CoinMa
 
 Get trending or categorized token listings with rich market data — multi-timeframe price changes, market cap, volume, and supply.
 
-**Base URL:** `https://gateway.us.trustwallet.com`
+**Base URL:** `https://tws.trustwallet.com`
 **Auth:** HMAC-SHA256 (see [setup](../setup/SKILL.md))
 
 **Query parameters:**
@@ -158,7 +158,7 @@ Use `cursor` from the response in the next request's `cursor` parameter to pagin
 
 Get the current list of available asset listing categories. Categories are dynamic and may change over time.
 
-**Base URL:** `https://gateway.us.trustwallet.com`
+**Base URL:** `https://tws.trustwallet.com`
 **Auth:** HMAC-SHA256 (see [setup](../setup/SKILL.md))
 
 **Query parameters:**
