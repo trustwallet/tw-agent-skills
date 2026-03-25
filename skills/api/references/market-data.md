@@ -1,7 +1,3 @@
----
-name: market-data
-description: Get real-time token prices (index from CoinMarketCap + CoinGecko), discover trending tokens across 16+ categories (AI, DeFi, memes, Layer 1, ecosystem-specific), with multi-timeframe price changes, market cap, volume, and supply data. Use this whenever someone asks about crypto prices, market cap, volume, trending coins, top tokens in a category, or any "what's the price of X" question.
----
 
 # Market Data
 

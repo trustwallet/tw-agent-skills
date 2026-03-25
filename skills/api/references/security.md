@@ -1,7 +1,3 @@
----
-name: security
-description: Validate wallet addresses and check token risk — honeypot detection, audit status, freeze authority, and other security signals. Use this before interacting with any unfamiliar token or address, whenever someone asks "is this token safe", "is this address legit", wants to check for scams/rugs, or needs security due diligence on a contract.
----
 
 # Security
 

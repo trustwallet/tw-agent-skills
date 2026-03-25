@@ -1,7 +1,3 @@
----
-name: assets
-description: Work with the Trust Wallet assets repository — look up token logos and metadata, list assets by blockchain, and contribute new assets (add logo, info.json, update tokenlist). Use when the user asks about token logos, asset listings, adding a token to Trust Wallet, or querying trustwallet/assets.
----
 
 # Trust Wallet Assets
 

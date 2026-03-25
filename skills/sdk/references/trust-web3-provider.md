@@ -1,7 +1,3 @@
----
-name: trust-web3-provider
-description: Integrate and build on Trust Wallet's Web3 provider library. Use when working with trust-web3-provider, @trustwallet/web3-provider-*, or adding blockchain provider support for Ethereum, Solana, Cosmos, Bitcoin, Aptos, TON, or Tron.
----
 
 A modular TypeScript library that provides standardized Web3 provider interfaces for wallets to connect with dApps across multiple blockchains.
 
@@ -161,7 +157,7 @@ Set `disableMobileAdapter: true` to receive raw RPC method names instead.
 
 ## Chain-specific Setup
 
-See [references/chain-providers.md](references/chain-providers.md) for full setup examples for each chain (Ethereum, Solana, Cosmos, Bitcoin, Aptos, TON, Tron) and multi-chain configuration. Read that file when you need chain-specific provider configuration, constructor options, or method signatures.
+See [trust-web3-provider-refs/chain-providers.md](trust-web3-provider-refs/chain-providers.md) for full setup examples for each chain (Ethereum, Solana, Cosmos, Bitcoin, Aptos, TON, Tron) and multi-chain configuration. Read that file when you need chain-specific provider configuration, constructor options, or method signatures.
 
 ---
 

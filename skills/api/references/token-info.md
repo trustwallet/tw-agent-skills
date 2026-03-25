@@ -1,7 +1,3 @@
----
-name: token-info
-description: Search for tokens by name/symbol/address, get asset details, and check coin status across any blockchain. Use this whenever someone wants to find a token, look up token details, check if a chain or coin is active, or search for assets by keyword.
----
 
 # Token Info
 

@@ -1,7 +1,3 @@
----
-name: barz
-description: Build with, use, and contribute to Barz — Trust Wallet's modular ERC-4337 smart contract wallet. Use when working with trustwallet/barz, implementing account abstraction, adding wallet facets, writing tests for smart contract wallets, or integrating Barz into a dApp.
----
 
 # Barz — Modular Smart Contract Wallet
 

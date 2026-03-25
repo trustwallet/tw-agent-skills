@@ -1,7 +1,3 @@
----
-name: wallet-core
-description: Build with Trust Wallet Core — HD wallet creation, address derivation, and transaction signing across 140+ blockchains. Use when working with trustwallet/wallet-core, @trustwallet/wallet-core, or implementing key generation and signing in Swift, Kotlin, TypeScript, or Go.
----
 
 Cross-platform, cross-blockchain wallet library. Handles key generation, address derivation, and transaction signing for 140+ blockchains. Does **not** handle networking or broadcasting.
 

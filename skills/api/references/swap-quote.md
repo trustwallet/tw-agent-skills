@@ -1,7 +1,3 @@
----
-name: swap-quote
-description: Get swap quotes and transaction data for token swaps across any chain — same-chain and cross-chain via the Amber aggregator with 10+ DEX and bridge providers including 1inch, Jupiter, KyberSwap, THORChain, Stargate, and more. Use this whenever someone wants to swap tokens, bridge between chains, get a swap quote, compare DEX rates, or execute any kind of token exchange.
----
 
 # Swap Quotes
 
@@ -164,7 +160,7 @@ Get swap routes with price quotes. Returns one or more routes ranked by output a
   "routes": [
     {
       "id": "route-uuid",
-      "expirationDate": "2026-03-03T12:05:00Z",
+      "expirationDate": "<ISO-8601 timestamp, typically a few minutes from now>",
       "steps": [
         {
           "id": "step-uuid",

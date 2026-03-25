@@ -10,7 +10,7 @@ This is the foundation skill. Every other Trust Wallet API skill depends on it f
 
 | Base URL | Auth | Used By |
 |----------|------|---------|
-| `https://tws.trustwallet.com` | HMAC-SHA256 | Token prices, holdings, security, history, swap quotes, on/off-ramp, market listings |
+| `https://tws.trustwallet.com` | HMAC-SHA256 | Token prices, security, swap quotes, market listings, assets |
 
 ## Asset ID Format
 
@@ -36,7 +36,7 @@ The `coinId` follows the SLIP-44 standard.
 
 For the full list of 100+ supported chains and the complete HMAC-SHA256 signing algorithm with code examples (JS and Python), read the detailed reference:
 
-**Read `skills/setup/SKILL.md`** for:
+**Read `skills/api/references/setup.md`** for:
 - Full HMAC-SHA256 signing algorithm and pseudocode
 - JavaScript and Python code examples for request signing
 - Complete list of all supported EVM, UTXO, Cosmos, Solana, and other L1 chains

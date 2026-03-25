@@ -1,7 +1,3 @@
----
-name: trust-developer
-description: Build on the Trust Wallet developer platform. Use when integrating Trust Wallet deep links, detecting the browser extension, or setting up WalletConnect.
----
 
 Reference for building on the Trust Wallet developer platform: deep links, browser extension detection, and WalletConnect integration.
 

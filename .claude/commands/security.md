@@ -43,4 +43,4 @@ Example: `GET /v2/coinstatus/c60_t0xdAC17F958D2ee523a2206206994597C13D831ec7?ver
 
 **Solana security signals:** `hasFreezeAuthority`, `hasMintAuthority`, `isInitialized`, `warnings`
 
-For full response schemas, read `skills/security/SKILL.md`.
+For full response schemas, read `skills/api/references/security.md`.
