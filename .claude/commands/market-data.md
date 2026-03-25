@@ -47,4 +47,4 @@ Example: `GET /v1/assets/listings?version=27&currency=USD&category_id=ai&sort=mc
 
 Get the current list of available categories (they're dynamic and may change).
 
-For full response schemas, read `skills/market-data/SKILL.md`.
+For full response schemas, read `skills/api/references/market-data.md`.

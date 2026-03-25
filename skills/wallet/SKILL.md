@@ -1,70 +1,32 @@
 ---
-name: wallet
-description: Create and manage a non-custodial HD wallet — addresses, status, signing, keychain, and WalletConnect.
+name: trust-wallet-cli
+description: Trust Wallet CLI (`twak`) — install, create wallets, check balances, send tokens, swap, view history, set price alerts, manage ERC-20 approvals, check token risk, browse trending/DApps, and run x402 micropayments. Use whenever the user wants to use the twak CLI, manage a crypto wallet from the terminal, send or swap tokens via command line, check portfolio, create price alerts, approve ERC-20 spenders, or interact with Trust Wallet from a shell. Also covers MCP server setup for AI agents.
 ---
 
-# Wallet Management
+# Trust Wallet CLI (`twak`)
 
-Non-custodial HD (BIP39) wallet that derives addresses across 25+ chains. Keys remain local — signing happens on-device and private keys never leave the machine.
+Command-line interface for multichain crypto wallet operations. Install with `npm install -g @trustwallet/cli`.
 
-## Prerequisites
+## Quick Start
 
-- Authenticated (`twak auth status`)
+Read `references/setup.md` for installation and authentication.
 
-## Create a Wallet
+## Reference Guide
 
-```bash
-twak wallet create --password <pw>
-twak wallet create --password <pw> --no-keychain  # skip keychain
-```
+Read the reference that matches the user's task:
 
-Output includes derived addresses for all major chains.
+| Task | Reference | When to read |
+|------|-----------|--------------|
+| Install, auth, env vars | `references/setup.md` | First time setup, "install twak", "configure API keys" |
+| Create wallet, keychain, sign | `references/wallet.md` | "create wallet", "keychain", "sign message", "wallet status" |
+| Balance, holdings, portfolio | `references/balance.md` | "check balance", "portfolio", "token holdings" |
+| Send tokens, ENS transfers | `references/send.md` | "send ETH", "transfer to", "vitalik.eth" |
+| Swap tokens, cross-chain | `references/swap.md` | "swap ETH for USDC", "bridge", "cross-chain swap" |
+| Prices, trending, DApps | `references/market.md` | "price of", "trending tokens", "dapps" |
+| Transaction history | `references/history.md` | "tx history", "transaction details" |
+| Price alerts | `references/alerts.md` | "alert when ETH", "price alert", "notify me" |
+| ERC-20 approve/revoke | `references/erc20.md` | "approve spender", "check allowance", "revoke" |
+| Token risk checks | `references/token-risk.md` | "is this token safe", "honeypot check", "audit status" |
+| x402 micropayments | `references/x402.md` | "x402", "micropayment", "payment-gated API" |
 
-## Get Addresses
-
-```bash
-twak wallet address --chain ethereum --json
-twak wallet addresses --json                # all chains
-```
-
-## Check Status
-
-```bash
-twak wallet status --json
-```
-
-Output: `{ agentWallet: bool, keychainPassword: bool, walletConnect: { connected, address } }`
-
-## Sign a Message
-
-```bash
-twak wallet sign-message --chain ethereum --message "hello world" --json
-```
-
-Output: `{ chain, address, message, signature }`
-
-## Keychain Management
-
-The wallet password can be stored in the OS keychain so `--password` is not needed on every command:
-
-```bash
-twak wallet keychain save --password <pw>
-twak wallet keychain check
-twak wallet keychain delete
-```
-
-## Password Resolution Order
-
-1. `--password <pw>` CLI flag
-2. `TWAK_WALLET_PASSWORD` environment variable
-3. OS keychain (macOS Keychain / Linux Secret Service / Windows Credential Manager)
-
-## WalletConnect
-
-Connect an external wallet (e.g. Trust Wallet mobile) for interactive transaction approvals:
-
-```bash
-twak wallet connect
-```
-
-Requires `WALLETCONNECT_PROJECT_ID`.
+Read `references/setup.md` alongside any other reference if the CLI isn't installed yet.

@@ -52,4 +52,4 @@ Returns `transaction` (the swap tx), `approve` (ERC-20 approval if needed), and 
 3. For each step: `POST /amber-api/v1/route/step`
 4. Execute in order: revokeApproval (if any) → approve (if any) → main transaction
 
-For full response schemas and provider details, read `skills/swap-quote/SKILL.md`.
+For full response schemas and provider details, read `skills/api/references/swap-quote.md`.
