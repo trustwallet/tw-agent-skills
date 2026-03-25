@@ -1,6 +1,6 @@
 # Trust Wallet Agent Skills
 
-AI agent skills for Trust Wallet APIs and open-source libraries — swaps, market data, security, fiat on/off-ramp, wallet-core, Web3 provider, assets, and smart contract wallets — across **100+ chains**.
+AI agent skills for Trust Wallet APIs and open-source libraries — swaps, market data, security, wallet-core, Web3 provider, assets, and smart contract wallets — across **100+ chains**.
 
 ## Install
 
@@ -71,18 +71,28 @@ See the [setup skill](skills/setup/SKILL.md) for the full HMAC-SHA256 signing al
 | Skill | Actions | Description |
 |-------|---------|-------------|
 | [`setup`](skills/setup/SKILL.md) | — | Authentication (HMAC-SHA256), base URLs, 100+ supported chains |
+| [`cli-setup`](skills/cli-setup/SKILL.md) | — | Install and authenticate the TWAK CLI for multichain crypto wallet operations |
 | [`token-info`](skills/token-info/SKILL.md) | 3 | Token search, asset details, and coin status |
 | [`swap-quote`](skills/swap-quote/SKILL.md) | 6 | Swap quotes, step transactions, providers, and domains via Amber |
+| [`swap`](skills/swap/SKILL.md) | — | Execute same-chain and cross-chain token swaps via the CLI |
 | [`market-data`](skills/market-data/SKILL.md) | 3 | Token prices (CMC + CoinGecko index), trending listings by 16+ categories |
+| [`market`](skills/market/SKILL.md) | — | Real-time token prices, trending tokens across 16+ categories, and DApps via the CLI |
 | [`security`](skills/security/SKILL.md) | 2 | Address validation and token risk analysis |
-| | | |
+| [`token-risk`](skills/token-risk/SKILL.md) | — | Token risk checks (honeypot, audit, freeze authority) and address validation via the CLI |
 | [`wallet-core`](skills/wallet-core/SKILL.md) | — | HD wallet creation, address derivation, and transaction signing across 140+ blockchains |
+| [`wallet`](skills/wallet/SKILL.md) | — | Non-custodial HD wallet management — addresses, signing, keychain, and WalletConnect |
+| [`balance`](skills/balance/SKILL.md) | — | Wallet balances, token holdings, and portfolio across any blockchain |
+| [`send`](skills/send/SKILL.md) | — | Send tokens or native assets to any address or ENS name across 25+ chains |
+| [`history`](skills/history/SKILL.md) | — | Transaction history and details for any wallet address |
+| [`alerts`](skills/alerts/SKILL.md) | — | Price alerts that trigger when tokens reach target prices |
+| [`erc20`](skills/erc20/SKILL.md) | — | ERC-20 token spending approvals and allowance checks |
+| [`x402`](skills/x402/SKILL.md) | — | HTTP micropayments via x402 protocol — client and server |
 | [`trust-web3-provider`](skills/trust-web3-provider/SKILL.md) | — | Web3 provider library for Ethereum, Solana, Cosmos, Bitcoin, Aptos, TON, Tron |
 | [`trust-developer`](skills/trust-developer/SKILL.md) | — | Deep links, browser extension detection, and WalletConnect integration |
 | [`assets`](skills/assets/SKILL.md) | — | Token logos and metadata for thousands of tokens across 180+ blockchains |
 | [`barz`](skills/barz/SKILL.md) | — | Modular ERC-4337 smart contract wallet (Diamond proxy pattern) |
 
-**14 actions** across 10 skills covering 100+ supported chains.
+**14 actions** across 21 skills covering 100+ supported chains.
 
 ## Workflow
 
@@ -104,7 +114,7 @@ setup → token-info
 
 | Base URL | Auth | Purpose |
 |----------|------|---------|
-| `https://tws.trustwallet.com` | HMAC-SHA256 | Token prices, security, swap quotes, on/off-ramp, market listings, assets |
+| `https://tws.trustwallet.com` | HMAC-SHA256 | Token prices, security, swap quotes, market listings, assets |
 
 > **Rate limit:** Free tier is limited to **1 request per second**. Exceeding this returns `429 Too Many Requests`.
 

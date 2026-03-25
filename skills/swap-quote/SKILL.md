@@ -164,7 +164,7 @@ Get swap routes with price quotes. Returns one or more routes ranked by output a
   "routes": [
     {
       "id": "route-uuid",
-      "expirationDate": "2026-03-03T12:05:00Z",
+      "expirationDate": "<ISO-8601 timestamp, typically a few minutes from now>",
       "steps": [
         {
           "id": "step-uuid",

@@ -16,7 +16,7 @@ Register at [portal.trustwallet.com](https://portal.trustwallet.com) to obtain:
 
 | Base URL | Auth | Used By |
 |----------|------|---------|
-| `https://tws.trustwallet.com` | HMAC-SHA256 | Token prices, security, swap quotes, on/off-ramp, market listings, assets |
+| `https://tws.trustwallet.com` | HMAC-SHA256 | Token prices, security, swap quotes, market listings, assets |
 
 ## Rate Limits
 
@@ -156,7 +156,7 @@ The `coinId` follows the [SLIP-44](https://github.com/satoshilabs/slips/blob/mas
 
 ## Supported Chains
 
-Trust Wallet supports 100+ chains. Below is the complete list grouped by type.
+Trust Wallet supports 100+ chains. Below is the list grouped by type. Chains marked with `—` for Coin ID are supported but do not have a SLIP-44 coin ID assigned in this reference; use the chain ID or domain ID for those chains instead.
 
 ### EVM Chains
 
@@ -268,7 +268,6 @@ Trust Wallet supports 100+ chains. Below is the complete list grouped by type.
 | TON | 607 | TON |
 | Sui | 784 | SUI |
 | NEAR | 397 | NEAR |
-| Solana | 501 | SOL |
 | Polkadot | 354 | DOT |
 | Kusama | 434 | KSM |
 | Cardano | 1815 | ADA |

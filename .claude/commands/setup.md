@@ -10,7 +10,7 @@ This is the foundation skill. Every other Trust Wallet API skill depends on it f
 
 | Base URL | Auth | Used By |
 |----------|------|---------|
-| `https://tws.trustwallet.com` | HMAC-SHA256 | Token prices, holdings, security, history, swap quotes, on/off-ramp, market listings |
+| `https://tws.trustwallet.com` | HMAC-SHA256 | Token prices, security, swap quotes, market listings, assets |
 
 ## Asset ID Format
 

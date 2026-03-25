@@ -1,0 +1,80 @@
+---
+name: x402
+description: Make HTTP requests to x402-gated endpoints with automatic micropayments, or run a payment-gated API server.
+---
+
+# x402 Micropayments
+
+x402 is an HTTP payment protocol built on the 402 Payment Required status code. When a server requires payment, the client automatically pays and retries.
+
+## Client — Access a Paid Endpoint
+
+```bash
+twak x402 request <url>
+```
+
+### Flow
+
+1. Client sends HTTP request without payment
+2. Server returns `402 Payment Required` with payment details
+3. Client pays on-chain and retries with payment proof
+4. Server verifies and returns the response
+
+### Examples
+
+```bash
+# GET request (prompts for confirmation before paying)
+twak x402 request https://api.example.com/data --json
+
+# Skip confirmation for trusted endpoints
+twak x402 request https://api.example.com/data --yes --json
+
+# Raise payment cap
+twak x402 request https://api.example.com/premium --max-payment 0.5 --yes --json
+
+# POST with JSON body
+twak x402 request https://api.example.com/analyze \
+  --method POST --body '{"query":"price of ETH"}' --yes --json
+```
+
+### Safety
+
+- Only `https://` URLs accepted
+- Payment capped by `--max-payment` (default: 0.01)
+- Interactive confirmation before payment unless `--yes` is passed
+
+### Client Options
+
+- `--method <method>` — HTTP method: GET, POST, PUT, DELETE (default: GET)
+- `--body <json>` — JSON request body
+- `--max-payment <amount>` — Max auto-approved payment (default: 0.01)
+- `--yes` — Skip confirmation prompt
+- `--password <pw>` — Wallet password (resolved from keychain if omitted)
+- `--json` — Output as JSON
+
+## Server — Run a Payment-Gated API
+
+```bash
+twak serve --rest \
+  --x402 \
+  --payment-amount 0.01 \
+  --payment-asset usdc \
+  --payment-chain eip155:8453 \
+  --payment-recipient 0xYourAddress
+```
+
+## Payment Info
+
+```bash
+twak x402 info
+```
+
+## Supported Payment Assets
+
+| Asset | Chain ID | Chain |
+|-------|----------|-------|
+| USDC | eip155:8453 | Base |
+| USDC | eip155:1 | Ethereum |
+| USDC | eip155:137 | Polygon |
+
+Base is recommended — low fees and fast finality.
