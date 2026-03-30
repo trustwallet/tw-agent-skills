@@ -5,48 +5,52 @@ Create recurring swaps (DCA) or conditional one-time swaps (limit orders) that e
 
 ## Create a DCA Automation
 
-Dollar-cost averaging — swap a fixed amount on a recurring schedule.
+Dollar-cost averaging — swap a fixed amount of the source token (`--from`) on a recurring schedule. `--amount` is always denominated in the source token.
 
 ```bash
 twak automate add \
-  --type dca \
-  --from-token BNB --to-token USDC \
+  --from BNB --to USDC \
   --chain bsc \
   --amount 0.01 \
   --interval 24h \
   --json
 
 twak automate add \
-  --type dca \
-  --from-token ETH --to-token USDC \
+  --from ETH --to USDC \
   --chain ethereum \
   --amount 0.005 \
   --interval 7d \
   --json
 ```
 
-Intervals: `1h`, `6h`, `12h`, `24h`, `7d`, `30d`.
+Intervals: `30s`, `1m`, `5m`, `1h`, `6h`, `12h`, `24h`, `7d`, `30d` (minimum 5s).
 
 ## Create a Limit Order
 
-One-time swap that executes when price reaches a target.
+One-time swap that executes when the destination token's USD spot price meets a condition.
+
+`--condition` values:
+- `below` (default) — executes when price <= target (buy the dip)
+- `above` — executes when price >= target (take profit)
+
+`--price` is the target USD price of the destination token (`--to`). `--amount` is in the source token (`--from`).
 
 ```bash
+# Buy ETH when it drops below $1800 (spend 100 USDC)
 twak automate add \
-  --type limit \
-  --from-token USDC --to-token ETH \
+  --from USDC --to ETH \
   --chain ethereum \
   --amount 100 \
-  --target-price 1800 \
+  --price 1800 \
   --json
 
+# Sell BNB for USDT when BNB rises above $700
 twak automate add \
-  --type limit \
-  --from-token USDC --to-token BNB \
+  --from BNB --to USDT \
   --chain bsc \
-  --amount 50 \
-  --target-price 400 \
-  --condition below \
+  --amount 0.1 \
+  --price 700 \
+  --condition above \
   --json
 ```
 
