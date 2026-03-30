@@ -5,11 +5,13 @@ Set up price alerts that trigger when tokens reach target prices. Alerts are sto
 
 ## Create an Alert
 
+Accepts token symbols (auto-detects chain for native tokens) or asset IDs:
+
 ```bash
+twak alert create --token ETH --above 5000 --json
+twak alert create --token BTC --below 50000 --json
+twak alert create --token USDC --chain bsc --above 1.1 --json
 twak alert create --token c60 --chain ethereum --below 2000 --json
-twak alert create --token c60 --chain ethereum --above 5000 --json
-twak alert create --token c20000714 --chain bsc --above 500 --json
-twak alert create --token c501 --chain solana --below 100 --json
 ```
 
 ## List Alerts
@@ -35,12 +37,15 @@ twak alert delete <alertId>
 
 ## Continuous Monitoring
 
-Use `twak watch` to continuously poll and check alerts:
+Use `twak watch` to continuously poll alerts and execute DCA/limit order automations:
 
 ```bash
 twak watch                    # polls every 60s
 twak watch --interval 5m     # custom interval
+twak watch --dry-run         # check conditions without executing
 ```
+
+See `references/automations.md` for DCA and limit order setup.
 
 ## Token IDs
 

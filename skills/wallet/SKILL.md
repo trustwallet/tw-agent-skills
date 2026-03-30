@@ -1,6 +1,6 @@
 ---
 name: trust-wallet-cli
-description: Trust Wallet CLI (`twak`) — install, create wallets, check balances, send tokens, swap, view history, set price alerts, manage ERC-20 approvals, check token risk, browse trending/DApps, and run x402 micropayments. Use whenever the user wants to use the twak CLI, manage a crypto wallet from the terminal, send or swap tokens via command line, check portfolio, create price alerts, approve ERC-20 spenders, or interact with Trust Wallet from a shell. Also covers MCP server setup for AI agents.
+description: Trust Wallet CLI (`twak`) — install, create wallets, check balances, send tokens, swap, view history, set price alerts, DCA automations, limit orders, manage ERC-20 approvals, check token risk, browse trending/DApps, and run x402 micropayments. Use whenever the user wants to use the twak CLI, manage a crypto wallet from the terminal, send or swap tokens via command line, check portfolio, create price alerts, set up DCA, create limit orders, approve ERC-20 spenders, or interact with Trust Wallet from a shell. Also covers MCP server setup for AI agents.
 ---
 
 # Trust Wallet CLI (`twak`)
@@ -25,6 +25,7 @@ Read the reference that matches the user's task:
 | Prices, trending, DApps | `references/market.md` | "price of", "trending tokens", "dapps" |
 | Transaction history | `references/history.md` | "tx history", "transaction details" |
 | Price alerts | `references/alerts.md` | "alert when ETH", "price alert", "notify me" |
+| DCA & limit orders | `references/automations.md` | "DCA", "dollar cost average", "limit order", "recurring swap", "buy when price" |
 | ERC-20 approve/revoke | `references/erc20.md` | "approve spender", "check allowance", "revoke" |
 | Token risk checks | `references/token-risk.md` | "is this token safe", "honeypot check", "audit status" |
 | x402 micropayments | `references/x402.md` | "x402", "micropayment", "payment-gated API" |
