@@ -107,4 +107,24 @@ twak wallet balance --chain ethereum --json
 
 ## Supported Chains
 
-Run `twak chains` to see all 25+ supported chains including Ethereum, Solana, Bitcoin, BSC, Polygon, Arbitrum, Base, Avalanche, TON, Sui, Aptos, and more.
+List all supported chains:
+
+```bash
+twak chains
+```
+
+For structured output (useful for scripting or agents):
+
+```bash
+twak chains --json
+```
+
+JSON output fields: `key` (use as `--chain` argument), `name`, `symbol`, `namespace`, `chainId`, `coinId`.
+
+Example entry:
+
+```json
+{ "key": "ethereum", "name": "Ethereum", "symbol": "ETH", "namespace": "eip155", "chainId": "ethereum", "coinId": 60 }
+```
+
+25 chains are supported across EVM (eip155), Solana, Bitcoin (bip122), TRON, Cosmos, NEAR, Aptos, TON, and Sui namespaces.

@@ -18,6 +18,7 @@ Read the reference that matches the user's task:
 | Task | Reference | When to read |
 |------|-----------|--------------|
 | Install, auth, env vars | `references/setup.md` | First time setup, "install twak", "configure API keys" |
+| List supported chains, chain keys | `references/setup.md` | "what chains are supported", "list chains", "show chain keys", "what is the chain key for X" |
 | Create wallet, keychain, sign | `references/wallet.md` | "create wallet", "keychain", "sign message", "wallet status" |
 | Balance, holdings, portfolio | `references/balance.md` | "check balance", "portfolio", "token holdings" |
 | Send tokens, ENS transfers | `references/send.md` | "send ETH", "transfer to", "vitalik.eth" |
