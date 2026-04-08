@@ -127,4 +127,4 @@ Example entry:
 { "key": "ethereum", "name": "Ethereum", "symbol": "ETH", "namespace": "eip155", "chainId": "ethereum", "coinId": 60 }
 ```
 
-25 chains are supported across EVM (eip155), Solana, Bitcoin (bip122), TRON, Cosmos, NEAR, Aptos, TON, and Sui namespaces.
+25+ chains are supported across EVM (eip155), Solana, Bitcoin (bip122), TRON, Cosmos, NEAR, Aptos, TON, and Sui namespaces.
