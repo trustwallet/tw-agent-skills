@@ -64,6 +64,9 @@ Decimals are resolved automatically via the API.
 - `--to <address>` — Destination address or ENS name (required)
 - `--amount <n>` — Amount in human-readable format (required)
 - `--token <assetId>` — Token asset ID (required)
+- `--confirm-to <address>` — Pin the expected resolved address. Transfer is rejected if ENS resolution returns a different address.
+- `--max-usd <n>` — Maximum allowed transfer value in USD (default: 10000). Transfer is rejected if value exceeds this.
+- `--skip-safety-check` — Bypass the USD value safety check
 - `--password <pw>` — Wallet password (resolved from OS keychain if omitted)
 - `--json` — Output as JSON
 

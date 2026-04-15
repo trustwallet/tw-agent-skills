@@ -11,8 +11,11 @@ Non-custodial HD (BIP39) wallet that derives addresses across 25+ chains. Keys r
 
 ```bash
 twak wallet create --password <pw>
-twak wallet create --password <pw> --no-keychain  # skip keychain
+twak wallet create --password <pw> --no-keychain            # skip keychain
+twak wallet create --password <pw> --skip-password-check    # skip strength validation (test only)
 ```
+
+Password must be at least 8 characters with mixed case and a number. Use `--skip-password-check` only for test wallets.
 
 Output includes derived addresses for all major chains.
 
@@ -60,7 +63,11 @@ twak wallet keychain delete
 Connect an external wallet (e.g. Trust Wallet mobile) for interactive transaction approvals:
 
 ```bash
-twak wallet connect
+twak wallet connect --project-id <id>
+twak wallet connect --project-id <id> --chains "eip155:1,eip155:56"
+twak wallet connect --project-id <id> --timeout 120
 ```
 
-Requires `WALLETCONNECT_PROJECT_ID`.
+- `--project-id <id>` — WalletConnect project ID (or set `WALLETCONNECT_PROJECT_ID` env var)
+- `--chains <list>` — Comma-separated CAIP-2 chain IDs (default: major EVM chains)
+- `--timeout <seconds>` — Connection timeout (default: 300)
