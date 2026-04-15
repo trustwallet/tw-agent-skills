@@ -13,15 +13,13 @@ Execute same-chain or cross-chain token swaps via Trust Wallet. Supports all EVM
 Always get a quote before executing to confirm rates and price impact:
 
 ```bash
-twak swap <amount> <fromToken> <toToken> --chain <chainKey> --quote-only --json
-```
-
-Examples:
-
-```bash
+# By amount: twak swap <amount> <from> <to>
 twak swap 1 ETH USDC --chain ethereum --quote-only --json
 twak swap 10 SOL USDC --chain solana --quote-only --json
 twak swap 100 USDC USDC --chain ethereum --to-chain arbitrum --quote-only --json
+
+# By USD value: twak swap <from> <to> --usd <amount>
+twak swap ETH USDC --chain ethereum --usd 100 --quote-only --json
 ```
 
 Only execute after the user confirms the quote.

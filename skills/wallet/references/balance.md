@@ -15,7 +15,7 @@ Native token balance on a specific chain (password auto-resolved from OS keychai
 twak wallet balance --chain ethereum --json
 twak wallet balance --chain solana --json
 twak wallet balance --chain bsc --json
-twak wallet balance --all --json                # all chains with funds
+twak wallet balance --all --json
 twak wallet balance --chain ethereum --no-tokens --json  # native only, skip token lookup
 ```
 
@@ -33,7 +33,7 @@ twak wallet portfolio --json
 twak wallet portfolio --chains ethereum,base,bsc,solana --json
 ```
 
-Default chains: all 25 supported chains. Use `--chains` to narrow scope.
+Default chains: ethereum, arbitrum, optimism, polygon, bsc, avalanche, base, fantom, linea, scroll, zksync, blast, sonic, celo, aurora, solana, bitcoin, litecoin, dogecoin, tron, cosmos, near, aptos, ton, sui.
 
 ## Any Address Balance
 
