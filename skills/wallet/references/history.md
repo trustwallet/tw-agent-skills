@@ -28,22 +28,22 @@ twak tx <hash> --chain solana --json
 
 ## Own Wallet History
 
-If the user has an agent wallet, get their address first:
+If `--address` is omitted and an agent wallet exists, the address is auto-detected:
 
 ```bash
-twak wallet address --chain ethereum --json
+twak history --chain ethereum --json                    # auto-detects wallet address
+twak history --chain ethereum --json --password <pw>    # explicit password if no keychain
 ```
-
-Then query history with that address.
 
 ## Options
 
 ### `history`
-- `--address <addr>` — Wallet address (required)
-- `--chain <chainKey>` — Chain key (required)
+- `--address <addr>` — Wallet address (auto-detected from agent wallet if omitted)
+- `--chain <chainKey>` — Chain key (omit for bulk history across all chains)
 - `--limit <n>` — Max results (default: 20)
 - `--from <date>` — Start date (YYYY-MM-DD)
 - `--to <date>` — End date (YYYY-MM-DD)
+- `--password <pw>` — Wallet password (for auto-detecting address when `--address` is omitted)
 - `--json` — Output as JSON
 
 ### `tx`

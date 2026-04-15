@@ -49,6 +49,7 @@ twak swap 0.01 ETH BNB --chain ethereum --to-chain bsc --json
 - `--chain <key>` — Source chain (default: ethereum)
 - `--to-chain <key>` — Destination chain for cross-chain swaps
 - `--slippage <pct>` — Slippage tolerance % (default: 1)
+- `--usd <amount>` — Swap a USD-equivalent amount of the source token (e.g. `twak swap ETH USDC --usd 100`)
 - `--quote-only` — Get quote without executing
 - `--password <pw>` — Wallet password (resolved from OS keychain if omitted)
 - `--json` — Output as JSON
