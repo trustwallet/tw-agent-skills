@@ -1,8 +1,0 @@
-{
-  "repo": "trustwallet/tw-agent-skills",
-  "skills": [
-    { "name": "trust-wallet-sdk", "before": 94, "after": 100 },
-    { "name": "trust-wallet-cli", "before": 89, "after": 95 },
-    { "name": "trust-wallet-api", "before": 89, "after": 100 }
-  ]
-}
