@@ -9,7 +9,18 @@ Command-line interface for multichain crypto wallet operations. Install with `np
 
 ## Quick Start
 
-Read `references/setup.md` for installation and authentication.
+```bash
+npm install -g @trustwallet/cli
+twak auth status --json          # check credentials
+twak wallet balance --chain ethereum --json
+twak send --chain ethereum --to 0x... --amount 0.01 --token ETH
+```
+
+Read `references/setup.md` for full installation and authentication steps.
+
+## Safety
+
+Always confirm addresses and amounts before executing `send`, `swap`, or `approve` commands. Start with a small test transfer for new addresses. Keys remain local — signing happens on-device.
 
 ## Reference Guide
 
