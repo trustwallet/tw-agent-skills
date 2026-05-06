@@ -22,6 +22,8 @@ twak onramp buy --quote-id <quoteId> --asset c60 --json
 
 The destination address defaults to your stored wallet's address on the asset's chain. Override with `--wallet <address>` (the CLI loudly flags manual addresses — verify before continuing).
 
+Quotes are sorted lowest-spread-first: `quotes[0]` is the provider giving the most crypto for the same fiat input. Each row has a `vsBestPct` field — `0` for the best, positive for worse (e.g. `vsBestPct: 8.23` means this quote gives 8.23% less crypto than the best one in the same response).
+
 After payment completes (5–30 min for card, 1–3 business days for bank transfer), check your balance:
 
 ```bash
@@ -58,6 +60,8 @@ twak onramp sell --quote-id <quoteId> --asset c60 --json
 twak onramp sell-confirm \
   --asset c60 --to <provider-deposit-address> --amount 0.1 --json
 ```
+
+Sell quotes are sorted lowest-spread-first: `quotes[0]` is the provider returning the most fiat for the same crypto input. The `vsBestPct` field works the same way as on buy quotes (`0` for the best, positive for worse).
 
 ### Offramp options
 
