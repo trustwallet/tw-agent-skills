@@ -23,6 +23,7 @@ Read the reference that matches the user's task:
 | Balance, holdings, portfolio | `references/balance.md` | "check balance", "portfolio", "token holdings" |
 | Send tokens, ENS transfers | `references/send.md` | "send ETH", "transfer to", "vitalik.eth" |
 | Swap tokens, cross-chain | `references/swap.md` | "swap ETH for USDC", "bridge", "cross-chain swap" |
+| Buy/sell crypto with fiat | `references/onramp.md` | "buy ETH with USD", "onramp", "offramp", "fiat", "sell crypto for cash" |
 | Prices, trending, DApps | `references/market.md` | "price of", "trending tokens", "dapps" |
 | Transaction history | `references/history.md` | "tx history", "transaction details" |
 | Price alerts | `references/alerts.md` | "alert when ETH", "price alert", "notify me" |
