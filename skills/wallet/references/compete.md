@@ -7,7 +7,6 @@ Register your agent wallet for the **BNB HACK: AI TRADING AGENT EDITION** compet
 
 - Authenticated (`twak auth status`)
 - Agent wallet created (`twak wallet create --password <pw>`) — the registered address is derived from your stored wallet on BSC
-- A small amount of BNB on BSC to cover gas for `register` (a real on-chain transaction)
 
 ## Check Status
 
@@ -31,7 +30,7 @@ Output: `{ registered, participant, opensAt, deadline, open, secondsRemaining, c
 twak compete register --json
 ```
 
-Registers `participant` on-chain. The command is idempotent and validates the window client-side before spending gas:
+Registers `participant` on-chain. The command is idempotent and validates the window client-side before submitting a transaction:
 
 - **Already registered** → returns `{ registered: true, alreadyRegistered: true, participant, deadline, chain }` without sending a transaction.
 - **Before `opensAt`** → fails with `VALIDATION_ERROR` ("registration not open yet").
@@ -52,4 +51,4 @@ Both `compete status` and `compete register` accept:
 
 ## Registry Contract
 
-Registration targets the competition registry deployed on BSC at `0x212c61B9B72C95d95BF29CF032F5E5635629Aed5`. Override the target with the `COMPETITION_REGISTRY_ADDRESS` environment variable (defaults to the built-in deployment).
+Registration targets the competition registry deployed on BSC at `0x212c61B9B72C95d95BF29CF032F5E5635629Aed5`.
