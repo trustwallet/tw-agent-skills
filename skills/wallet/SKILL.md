@@ -31,5 +31,6 @@ Read the reference that matches the user's task:
 | ERC-20 approve/revoke | `references/erc20.md` | "approve spender", "check allowance", "revoke" |
 | Token risk checks | `references/token-risk.md` | "is this token safe", "honeypot check", "audit status" |
 | x402 micropayments | `references/x402.md` | "x402", "micropayment", "payment-gated API", "preview payment", "quote endpoint cost", "how much does this API charge" |
+| BNB Hack competition register/status | `references/compete.md` | "register for the competition", "BNB hack", "AI trading agent edition", "compete", "registration status" |
 
 Read `references/setup.md` alongside any other reference if the CLI isn't installed yet.
