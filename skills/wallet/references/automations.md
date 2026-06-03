@@ -3,7 +3,7 @@
 
 Create recurring swaps (DCA) or conditional one-time swaps (limit orders) that execute automatically via `twak watch`.
 
-**Important:** Automations only execute while `twak watch` is running. If the process is stopped, automations are paused until `watch` is started again.
+**Important:** Automations only execute while a watcher is polling — either a standalone `twak watch` process, or an MCP server started with `twak serve --watch`. Without one, rules are saved but never fire. If the watcher is stopped, automations are paused until it is started again.
 
 ## Create a DCA Automation
 
@@ -92,6 +92,21 @@ twak watch --json            # structured output
 ```
 
 `watch` requires the wallet password to execute swaps. Password is auto-resolved from the OS keychain if configured.
+
+## Running under the MCP server
+
+When driving twak over MCP (`twak serve`), automations created with the `create_automation` action only execute if the server was launched with `--watch`.
+
+```bash
+twak serve --watch                      # polls every 60s by default
+twak serve --watch --watch-interval 5m  # custom poll interval
+```
+
+Without `--watch` (or a separate `twak watch` process), automations are saved but never fire.
+
+- Automations execute using the local agent wallet; the watcher stays idle in WalletConnect mode, where each swap needs interactive approval.
+- To execute a saved automation once immediately, use the `run_automation_now` action.
+- Don't run both `twak serve --watch` and `twak watch` against the same wallet / `~/.twak/automations.json` — both loops would fire the same automation.
 
 ## Storage
 
