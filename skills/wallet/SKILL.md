@@ -33,5 +33,6 @@ Read the reference that matches the user's task:
 | x402 micropayments | `references/x402.md` | "x402", "micropayment", "payment-gated API", "preview payment", "quote endpoint cost", "how much does this API charge" |
 | BNB Hack competition register/status | `references/compete.md` | "register for the competition", "BNB hack", "AI trading agent edition", "compete", "registration status" |
 | Register/manage ERC-8004 agent identities | `references/erc8004.md` | "register agent identity", "erc8004", "agent NFT", "agentURI", "agent metadata", "identity registry", "mint agent" |
+| Agent job escrows (ERC-8183 Agentic Commerce) | `references/erc8183.md` | "erc8183", "agentic commerce", "job escrow", "create job", "fund job", "submit deliverable", "settle job", "agent payment escrow", "evaluator router" |
 
 Read `references/setup.md` alongside any other reference if the CLI isn't installed yet.
