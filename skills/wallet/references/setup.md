@@ -128,3 +128,7 @@ Example entry:
 ```
 
 25+ chains are supported across EVM (eip155), Solana, Bitcoin (bip122), TRON, Cosmos, NEAR, Aptos, TON, and Sui namespaces.
+
+### BSC Testnet
+
+`bsctestnet` (BSC testnet, chain ID 97) is a special chain key that is **not** listed by `twak chains`. It is enabled only for ERC-20 transfer/approve/balance and ERC-8004 / ERC-8183 contract calls — not swaps, portfolio, market data, or onramp. Pass it via `--chain bsctestnet`. See `references/send.md` and `references/erc20.md` for usage.
