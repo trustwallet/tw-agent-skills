@@ -40,7 +40,7 @@ Registers `participant` on-chain. The command is idempotent and validates the wi
 Success output: `{ registered: true, participant, deadline, hash, chain, explorer }`
 
 - `hash` — registration transaction hash
-- `explorer` — BscScan URL for the transaction
+- `explorer` — block-explorer URL for the transaction (the chain's explorer; BscScan, since `chain` is always `bsc`)
 
 ## Options
 
@@ -51,4 +51,4 @@ Both `compete status` and `compete register` accept:
 
 ## Registry Contract
 
-Registration targets the competition registry deployed on BSC at `0x212c61B9B72C95d95BF29CF032F5E5635629Aed5`.
+Registration targets the competition registry deployed on BSC at `0x212c61B9B72C95d95BF29CF032F5E5635629Aed5`. Set the `COMPETITION_REGISTRY_ADDRESS` environment variable to override this address for both subcommands (e.g. to target a test deployment); the chain stays `bsc`.

@@ -5,6 +5,10 @@ Create recurring swaps (DCA) or conditional one-time swaps (limit orders) that e
 
 **Important:** Automations only execute while a watcher is polling — either a standalone `twak watch` process, or an MCP server started with `twak serve --watch`. Without one, rules are saved but never fire. If the watcher is stopped, automations are paused until it is started again.
 
+`automate add` requires exactly one of `--interval` (creates a DCA) or `--price` (creates a limit order) — both or neither is a `VALIDATION_ERROR`. Only EVM chains and Solana are supported; any other chain is rejected with `CHAIN_UNSUPPORTED` ("Use an EVM chain or Solana."). `--amount` must be a positive number.
+
+Output of `add`: the full automation record (see Storage below; `runCount` starts at 0).
+
 ## Create a DCA Automation
 
 Dollar-cost averaging — swap a fixed amount of the source token (`--from`) on a recurring schedule. `--amount` is always denominated in the source token.
@@ -26,7 +30,7 @@ twak automate add \
   --json
 ```
 
-Intervals accept any `<number><s|m|h>` format (e.g. `30s`, `5m`, `1h`, `24h`). Minimum 5s.
+Intervals accept `<number><s|m|h|d>` (e.g. `30s`, `5m`, `1h`, `7d`); decimals are allowed and a bare number means seconds. Minimum 5s.
 
 ## Create a Limit Order
 
@@ -61,7 +65,7 @@ twak automate add \
 
 | Flag | Description |
 |------|-------------|
-| `--max-runs <n>` | Stop after N executions. Automation deactivates automatically. |
+| `--max-runs <n>` | Stop after N executions (positive integer). Automation deactivates automatically. |
 | `--expires <date>` | Expiry date in ISO 8601 format (e.g. `2026-04-01`). Automation deactivates after this date. |
 | `--chain <chain>` | Chain key (default: `ethereum`). |
 | `--json` | Structured JSON output. |
@@ -72,13 +76,27 @@ twak automate add \
 twak automate list --json
 ```
 
+Output: array of automation records, each enriched with computed `nextRunAt` (ISO timestamp) and `nextRunIn` (e.g. `in 3h`, `overdue`). Both are populated for DCA automations only and are `null` for limit orders.
+
 ## Pause / Resume / Delete
 
 ```bash
-twak automate pause <id>
-twak automate resume <id>
+twak automate pause <id> --json
+twak automate resume <id> --json
 twak automate delete <id>
 ```
+
+`pause`/`resume` output the updated automation record. `delete` emits **no JSON on success** even with `--json` — the confirmation goes to stderr only; errors still emit `{ error, errorCode }` on stdout. Unknown id → `AUTOMATION_NOT_FOUND`.
+
+When a limit order fires, it is deactivated (`active: false`), not deleted — `automate resume <id>` re-arms it.
+
+## Errors
+
+On failure, automate commands emit `{ error, errorCode }` on stdout (with `--json`) and exit with code 1. Error codes:
+
+- `VALIDATION_ERROR` — `--interval`/`--price` both or neither, non-positive `--amount`, interval below 5s, non-positive-integer `--max-runs`, invalid `--expires` date
+- `CHAIN_UNSUPPORTED` — unknown chain key, or a non-EVM/non-Solana chain (add)
+- `AUTOMATION_NOT_FOUND` — unknown automation id (delete/pause/resume)
 
 ## Execute Automations
 
@@ -91,7 +109,9 @@ twak watch --dry-run         # check conditions without executing
 twak watch --json            # structured output
 ```
 
-`watch` requires the wallet password to execute swaps. Password is auto-resolved from the OS keychain if configured.
+`--interval` accepts `<number><s|m|h|d>`; a bare number means seconds. Minimum 5 seconds. `--auto-lock <minutes>` locks the wallet after N minutes of inactivity.
+
+`watch` requires the wallet password to execute swaps. Resolution order: `--password <password>` flag → `TWAK_WALLET_PASSWORD` env var → OS keychain.
 
 ## Running under the MCP server
 

@@ -15,6 +15,22 @@ Verify installation:
 twak --version
 ```
 
+On failure, commands with `--json` emit `{ error, errorCode }` on stdout and exit 1.
+
+## Guided Setup (Interactive)
+
+```bash
+twak setup
+```
+
+Interactive alternative to the manual env-var + `twak init` flow below: prompts for API credentials, wires twak into AI harnesses, and creates a wallet. With no flags it runs all three phases; flags restrict it to specific phases:
+
+- `--reconfigure-creds` — re-prompt for API credentials even if already configured
+- `--harness <name>` — run only the harness phase for one harness
+- `--wallet` — run only the wallet phase
+
+Set `TWAK_NONINTERACTIVE=1` or `NO_PROMPT=1` to force non-interactive mode (also auto-detected when neither stdin nor stderr is a TTY). For scripted/agent setups, prefer the manual flow below.
+
 ## Authenticate
 
 ### Step 1: Check existing credentials
@@ -59,6 +75,14 @@ twak init
 ```
 
 This reads from the environment and saves to `~/.twak/credentials.json` (mode 0600) with the HMAC secret additionally stored in the OS keychain (macOS Keychain / Linux Secret Service / Windows Credential Manager).
+
+`twak init` options:
+
+- `--wc-project-id <id>` — store a WalletConnect project ID alongside the credentials (also read from `WALLETCONNECT_PROJECT_ID`)
+- `--json` — JSON output: `{ configured: true, source: 'env' | 'cli' | 'file' }`; when `source` is `'file'` (existing config, nothing written) it also includes `accessIdPreview` and `walletConnectProjectId`
+- `--api-key <key>` / `--api-secret <secret>` — pass credentials directly; avoid these (shell history exposure), env vars are preferred
+
+With `--json` and no credentials available from flags, environment, or an existing config file, `init` fails with `errorCode: "VALIDATION_ERROR"`.
 
 ### Step 5: Verify
 

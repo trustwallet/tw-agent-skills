@@ -19,7 +19,7 @@ Read the reference that matches the user's task:
 |------|-----------|--------------|
 | Install, auth, env vars | `references/setup.md` | First time setup, "install twak", "configure API keys" |
 | List supported chains, chain keys | `references/setup.md` | "what chains are supported", "list chains", "show chain keys", "what is the chain key for X" |
-| Create wallet, keychain, sign | `references/wallet.md` | "create wallet", "keychain", "sign message", "wallet status" |
+| Create wallet, keychain, sign, register | `references/wallet.md` | "create wallet", "keychain", "sign message", "wallet status", "register wallet with backend" |
 | Balance, holdings, portfolio | `references/balance.md` | "check balance", "portfolio", "token holdings" |
 | Send tokens, ENS transfers | `references/send.md` | "send ETH", "transfer to", "vitalik.eth" |
 | Swap tokens, cross-chain | `references/swap.md` | "swap ETH for USDC", "bridge", "cross-chain swap" |
@@ -33,6 +33,20 @@ Read the reference that matches the user's task:
 | x402 micropayments | `references/x402.md` | "x402", "micropayment", "payment-gated API", "preview payment", "quote endpoint cost", "how much does this API charge" |
 | BNB Hack competition register/status | `references/compete.md` | "register for the competition", "BNB hack", "AI trading agent edition", "compete", "registration status" |
 | Register/manage ERC-8004 agent identities | `references/erc8004.md` | "register agent identity", "erc8004", "agent NFT", "agentURI", "agent metadata", "identity registry", "mint agent" |
-| Agent job escrows (ERC-8183 Agentic Commerce) | `references/erc8183.md` | "erc8183", "agentic commerce", "job escrow", "create job", "fund job", "submit deliverable", "settle job", "agent payment escrow", "evaluator router" |
+| Agent job escrows (ERC-8183 Agentic Commerce) | `references/erc8183.md` | "erc8183", "agentic commerce", "job escrow", "create job", "fund job", "submit deliverable", "settle job", "dispute policy", "policy-info", "agent payment escrow", "evaluator router" |
+| Run MCP / REST server for AI agents | MCP server section below | "MCP server", "twak serve", "connect an agent", "REST API" |
 
 Read `references/setup.md` alongside any other reference if the CLI isn't installed yet.
+
+## MCP server
+
+`twak serve` starts an MCP server on stdio exposing wallet actions to AI agents. Flags:
+
+- `--rest` — start a REST HTTP server instead of the MCP stdio server
+- `--port <n>` — REST server port (default `3000`)
+- `--host <host>` — REST bind host (default `127.0.0.1`; use `0.0.0.0` to expose externally)
+- `--password <password>` — wallet password (falls back to `TWAK_WALLET_PASSWORD` env var, then OS keychain)
+- `--auto-lock <minutes>` — auto-lock the wallet after N minutes of inactivity
+- `--wc-project-id <id>` — WalletConnect project ID (or set `WALLETCONNECT_PROJECT_ID`)
+- `--watch` — background watcher that fires DCA/limit automations; requires the local agent wallet (see `references/automations.md`)
+- `--watch-interval <duration>` — automation poll interval when `--watch` is set, e.g. `30s`, `5m`, `1h` (default 60s, min 5s)
