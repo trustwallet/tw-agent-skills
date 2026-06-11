@@ -40,7 +40,7 @@ Output: `{ agentWallet: bool, keychainPassword: bool, walletConnect: { connected
 twak wallet sign-message --chain ethereum --message "hello world" --json
 ```
 
-Output: `{ chain, address, message, signature }`
+Output: `{ chain, address, message, signature, digest }` — on EVM chains the signature is `0x`-prefixed and `digest` is the EIP-191 hash the signature recovers against (verifiable with `cast hash-message` / `cast wallet verify`); non-EVM chains omit `digest`.
 
 ## Keychain Management
 
