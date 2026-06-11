@@ -3,6 +3,8 @@
 
 Non-custodial HD (BIP39) wallet that derives addresses across 25+ chains. Keys remain local — signing happens on-device and private keys never leave the machine.
 
+On failure, commands with `--json` emit `{ error, errorCode }` on stdout and exit 1.
+
 ## Prerequisites
 
 - Authenticated (`twak auth status`)
@@ -17,7 +19,7 @@ twak wallet create --password <pw> --skip-password-check    # skip strength vali
 
 Password must be at least 8 characters with mixed case and a number. Use `--skip-password-check` only for test wallets.
 
-Output includes derived addresses for all major chains.
+With `--json`, output is `{ addresses: [{ chainId, address }] }` — the derived address for every supported chain. Human output shows only the chain count. Fails with `WALLET_EXISTS` if a wallet already exists (back up and delete `~/.twak/wallet.json` to recreate).
 
 ## Get Addresses
 
@@ -26,13 +28,23 @@ twak wallet address --chain ethereum --json
 twak wallet addresses --json                # all chains
 ```
 
+Both accept `--password <pw>` (falls back to `TWAK_WALLET_PASSWORD` / OS keychain).
+
 ## Check Status
 
 ```bash
 twak wallet status --json
 ```
 
-Output: `{ agentWallet: bool, keychainPassword: bool, walletConnect: { connected, address } }`
+Output: `{ agentWallet: 'configured' | 'not configured', keychainPassword: 'stored' | 'not stored', chains, supportedChains, createdAt?, addressCount? }` — `chains` and `supportedChains` are numbers (count of supported chains); `createdAt` and `addressCount` appear only when a wallet exists.
+
+## Register with Backend
+
+```bash
+twak wallet register --json
+```
+
+Re-registers the wallet's addresses with the Trust Wallet backend (enables token holdings / portfolio tracking — `wallet create` does this automatically, but it can fail silently). Accepts `--password <pw>`. Output: `{ registered: true, chains }` (`chains` = number of registered addresses).
 
 ## Sign a Message
 
@@ -51,6 +63,8 @@ twak wallet keychain save --password <pw>
 twak wallet keychain check
 twak wallet keychain delete
 ```
+
+`keychain check --json` output: `{ available, stored }` (booleans — keychain availability on this system, and whether a password is stored).
 
 ## Password Resolution Order
 

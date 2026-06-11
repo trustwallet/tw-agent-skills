@@ -15,7 +15,7 @@ Do not combine an asset ID with `--chain` — that is rejected. Native coins hav
 ## Prerequisites
 
 - Authenticated (`twak auth status`)
-- Agent wallet created (`twak wallet create --password <pw>`)
+- Agent wallet created (`twak wallet create --password <pw>`) — needed for `approve` and `revoke` only; `allowance` is a read and requires no wallet or password
 
 ## Approve a Spender
 
@@ -27,7 +27,7 @@ twak erc20 approve \
   --json
 ```
 
-`--amount` is in the token's smallest unit (e.g. wei for ETH-based tokens), or `unlimited` for max approval.
+`--amount` is in the token's own smallest unit — decimals vary per token (e.g. `100000000` = 100 USDC at 6 decimals; an 18-decimal token would need `100000000000000000000`). Or pass `unlimited` for max approval (requires `--confirm-unlimited`).
 
 Examples:
 
@@ -45,7 +45,7 @@ twak erc20 approve \
   --amount unlimited --confirm-unlimited --json
 ```
 
-Output: `{ hash, chain, owner, spender, token, amount, explorer }`
+Output: `{ hash, chain, owner, spender, token, amount, explorer }` — `chain` is the resolved chain key, `owner` the wallet address, `token` echoes the raw `--token` input (asset ID or contract address, whichever you passed), `amount` echoes the literal input (including the string `"unlimited"`, not the expanded max uint256), `explorer` is the explorer tx URL or `''` when the chain has no explorer mapping.
 
 ## Revoke Approval
 
@@ -58,6 +58,8 @@ twak erc20 revoke \
   --json
 ```
 
+Output: `{ hash, chain, owner, spender, token, explorer }` — same keys as `approve` minus `amount`; `token` echoes the raw `--token` input, `explorer` is `''` when the chain has no explorer mapping.
+
 ## Check Allowance
 
 ```bash
@@ -68,7 +70,7 @@ twak erc20 allowance \
   --json
 ```
 
-Output: `{ token, owner, spender, allowance }`
+Output: `{ token, owner, spender, allowance }` — `token`, `owner`, `spender` echo the inputs; `allowance` is a decimal string in the token's smallest unit (e.g. `"100000000"`).
 
 ## Options
 
@@ -78,14 +80,14 @@ Output: `{ token, owner, spender, allowance }`
 - `--amount <n>` — Amount in smallest unit, or `unlimited` (required)
 - `--chain <key>` — Chain key (e.g. `base`, `bsctestnet`). When set, `--token` is the token contract address.
 - `--confirm-unlimited` — Required when using `--amount unlimited` to acknowledge the risk
-- `--password <pw>` — Wallet password (resolved from OS keychain if omitted)
+- `--password <pw>` — Wallet password (falls back to `TWAK_WALLET_PASSWORD` env var, then OS keychain)
 - `--json` — Output as JSON
 
 ### `erc20 revoke`
 - `--token <assetIdOrAddress>` — Without `--chain`: ERC-20 asset ID. With `--chain`: the token contract address (required)
 - `--spender <address>` — Spender to revoke (required)
 - `--chain <key>` — Chain key (e.g. `base`, `bsctestnet`). When set, `--token` is the token contract address.
-- `--password <pw>` — Wallet password (resolved from OS keychain if omitted)
+- `--password <pw>` — Wallet password (falls back to `TWAK_WALLET_PASSWORD` env var, then OS keychain)
 - `--json` — Output as JSON
 
 ### `erc20 allowance`
@@ -94,6 +96,16 @@ Output: `{ token, owner, spender, allowance }`
 - `--spender <address>` — Spender address (required)
 - `--chain <key>` — Chain key (e.g. `base`, `bsctestnet`). When set, `--token` is the token contract address.
 - `--json` — Output as JSON
+
+## Errors
+
+With `--json`, errors emit a single `{ error, errorCode }` object to stdout and exit with code 1.
+
+| errorCode | Trigger |
+|---|---|
+| `VALIDATION_ERROR` | Asset ID (`c…`) combined with `--chain`; malformed token ID; `--amount unlimited` without `--confirm-unlimited`; invalid contract address inside the asset ID (`allowance`) |
+| `NOT_ERC20` | Asset ID without a `_t<address>` part — native coins have no allowance |
+| `CHAIN_UNSUPPORTED` | Unknown `--chain` key, or unsupported coin ID in the asset ID |
 
 ## Safety Notes
 

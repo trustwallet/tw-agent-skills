@@ -3,6 +3,8 @@
 
 Check token risk signals and validate wallet addresses before interacting with unfamiliar assets.
 
+On error, both commands emit `{ error, errorCode }` on stdout (with `--json`) and exit with code 1.
+
 ## Token Risk Check
 
 Checks for honeypot detection, audit status, freeze authority, and other security signals:
@@ -18,12 +20,15 @@ twak risk c60_t0xdAC17F958D2ee523a2206206994597C13D831ec7 --json  # USDT
 twak risk c60_t0x6982508145454Ce325dDbE47a25d4ec3d2311933 --json  # PEPE
 ```
 
+Unknown assetId → `errorCode: TOKEN_NOT_FOUND`.
+
 ## Address Validation
 
-Validate that an address is well-formed for its chain:
+Validate that an address is well-formed for its chain. Requires `--chain <key>` OR `--asset-id <id>`; with neither, fails with `VALIDATION_ERROR`:
 
 ```bash
-twak validate --address <addr> --json
+twak validate --address 0xdAC17F958D2ee523a2206206994597C13D831ec7 --chain ethereum --json
+twak validate --address <addr> --asset-id c501 --json
 ```
 
 ## When to Use
