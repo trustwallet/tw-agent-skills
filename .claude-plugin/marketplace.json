@@ -19,7 +19,8 @@
         "./skills/wallet-core",
         "./skills/assets",
         "./skills/barz",
-        "./skills/trust-developer"
+        "./skills/trust-developer",
+        "./skills/bstorms"
       ]
     }
   ]
