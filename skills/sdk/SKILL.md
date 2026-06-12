@@ -7,6 +7,19 @@ description: Trust Wallet open-source libraries — Wallet Core (HD wallets, add
 
 Open-source libraries for wallet integration, dApp connectivity, and smart wallets.
 
+## Quick Start — Wallet Core (TypeScript)
+
+```ts
+import { HDWallet, CoinType, AnyAddress } from '@trustwallet/wallet-core';
+
+const wallet = HDWallet.createWithMnemonic('your twelve word mnemonic ...');
+const key    = wallet.getKeyForCoin(CoinType.ethereum);
+const addr   = AnyAddress.createWithPublicKey(key.getPublicKeySecp256k1(false), CoinType.ethereum);
+console.log(addr.description());
+```
+
+Core flow: **mnemonic → HDWallet → PrivateKey → Address → sign transaction bytes**. Wallet Core handles keys and signing only — it does not connect to nodes or broadcast transactions.
+
 ## Reference Guide
 
 Read the reference that matches the user's task:

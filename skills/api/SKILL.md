@@ -9,7 +9,31 @@ REST API at `tws.trustwallet.com` — HMAC-SHA256 authenticated. Covers token se
 
 ## Quick Start
 
-Read `references/setup.md` first for authentication, asset ID format, and the full chain list.
+**Example** — get ETH price (Python):
+
+```python
+import hmac, hashlib, base64, uuid, requests
+from datetime import datetime, timezone
+
+access_id  = "YOUR_ACCESS_ID"
+secret     = "YOUR_HMAC_SECRET"
+method, path = "POST", "/v2/market/tickers"
+date  = datetime.now(timezone.utc).strftime("%a, %d %b %Y %H:%M:%S GMT")
+nonce = str(uuid.uuid4())
+sig   = base64.b64encode(hmac.new(secret.encode(), f"{method};{path};;{access_id};{nonce};{date}".encode(), hashlib.sha256).digest()).decode()
+
+resp = requests.post(f"https://tws.trustwallet.com{path}",
+    headers={"X-TW-CREDENTIAL": access_id, "X-TW-NONCE": nonce, "X-TW-DATE": date,
+             "Authorization": f"HMAC-SHA256 Signature={sig}", "Content-Type": "application/json"},
+    json={"currency": "USD", "assets": ["c60"]})
+print(resp.json()["tickers"][0]["price"])  # ETH price in USD
+```
+
+**Asset ID format**: `c{coin}` for native tokens (e.g., `c60` = ETH), `c{coin}_t{contract}` for tokens.
+
+**Error handling**: If 401 → re-check signing string format and secret. If 429 → wait 1s and retry (free tier: 1 req/s). If 200 → parse response body.
+
+Read `references/setup.md` for the full signing algorithm, chain list, and auth details.
 
 ## Reference Guide
 
