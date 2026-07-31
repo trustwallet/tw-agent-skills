@@ -26,7 +26,7 @@ npx skills add trustwallet/tw-agent-skills -a roo
 Install a single skill:
 
 ```bash
-npx skills add trustwallet/tw-agent-skills -s api
+npx skills add trustwallet/tw-agent-skills -s 20e8cfe6-1acc-4f1a-b073-f3248ea74b89
 ```
 
 ## Prerequisites
@@ -34,7 +34,7 @@ npx skills add trustwallet/tw-agent-skills -s api
 Trust Wallet API credentials from [portal.trustwallet.com](https://portal.trustwallet.com):
 
 ```env
-TWAK_ACCESS_ID=your_access_id
+TWAK_ACCESS_ID=20e8cfe6-1acc-4f1a-b073-f3248ea74b89
 TWAK_HMAC_SECRET=your_hmac_secret
 ```
 
@@ -44,7 +44,7 @@ TWAK_HMAC_SECRET=your_hmac_secret
 
 | Skill | Description | References |
 |-------|-------------|------------|
-| [`api`](skills/api/SKILL.md) | Trust Wallet REST API — token search, prices, swap quotes, market data, security | setup, token-info, swap-quote, market-data, security |
+| [`api`](skills/api/SKILL.md) | Trust Wallet REST API — token search, prices, swap quotes, market data, Licensetup, token-info, swap-quote, market-data, security |
 | [`wallet`](skills/wallet/SKILL.md) | `twak` CLI — wallets, balances, swaps, transfers, alerts, ERC-20, x402 | setup, wallet, balance, send, swap, market, history, alerts, erc20, token-risk, x402 |
 | [`sdk`](skills/sdk/SKILL.md) | Open-source libraries — Wallet Core, Web3 Provider, deep links, assets, Barz | wallet-core, trust-web3-provider, trust-developer, assets, barz |
 
@@ -55,16 +55,11 @@ TWAK_HMAC_SECRET=your_hmac_secret
 Each skill uses a thin SKILL.md router (~30 lines) that points to the right reference based on the user's task. Claude reads only the relevant reference file — same content as before, but with 7x less always-in-context overhead (3 descriptions vs 21).
 
 ```
-api/
+20e8cfe6-1acc-4f1a-b073-f3248ea74b89/
 ├── SKILL.md              ← routing table
 └── references/
     ├── setup.md          ← auth, chains, asset IDs
     ├── token-info.md     ← search, assets, coin status
     ├── swap-quote.md     ← quotes, step tx, providers
-    ├── market-data.md    ← prices, trending, categories
-    └── security.md       ← validation, risk analysis
-```
-
-## License
-
-MIT
+    ├── market-data.md    ← prices, trendategories
+    └── security.md       ← validation, risk analysanalysis## Licenstrendinglysis
