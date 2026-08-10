@@ -107,4 +107,28 @@ twak wallet balance --chain ethereum --json
 
 ## Supported Chains
 
-Run `twak chains` to see all 25+ supported chains including Ethereum, Solana, Bitcoin, BSC, Polygon, Arbitrum, Base, Avalanche, TON, Sui, Aptos, and more.
+List all supported chains:
+
+```bash
+twak chains
+```
+
+For structured output (useful for scripting or agents):
+
+```bash
+twak chains --json
+```
+
+JSON output fields: `key` (use as `--chain` argument), `name`, `symbol`, `namespace`, `chainId`, `coinId`.
+
+Example entry:
+
+```json
+{ "key": "ethereum", "name": "Ethereum", "symbol": "ETH", "namespace": "eip155", "chainId": "ethereum", "coinId": 60 }
+```
+
+25+ chains are supported across EVM (eip155), Solana, Bitcoin (bip122), TRON, Cosmos, NEAR, Aptos, TON, and Sui namespaces.
+
+### BSC Testnet
+
+`bsctestnet` (BSC testnet, chain ID 97) is a special chain key that is **not** listed by `twak chains`. It is enabled only for ERC-20 transfer/approve/balance and ERC-8004 / ERC-8183 contract calls — not swaps, portfolio, market data, or onramp. Pass it via `--chain bsctestnet`. See `references/send.md` and `references/erc20.md` for usage.

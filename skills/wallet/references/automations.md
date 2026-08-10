@@ -3,6 +3,8 @@
 
 Create recurring swaps (DCA) or conditional one-time swaps (limit orders) that execute automatically via `twak watch`.
 
+**Important:** Automations only execute while a watcher is polling — either a standalone `twak watch` process, or an MCP server started with `twak serve --watch`. Without one, rules are saved but never fire. If the watcher is stopped, automations are paused until it is started again.
+
 ## Create a DCA Automation
 
 Dollar-cost averaging — swap a fixed amount of the source token (`--from`) on a recurring schedule. `--amount` is always denominated in the source token.
@@ -19,11 +21,12 @@ twak automate add \
   --from ETH --to USDC \
   --chain ethereum \
   --amount 0.005 \
-  --interval 7d \
+  --interval 1h \
+  --max-runs 10 \
   --json
 ```
 
-Intervals: `30s`, `1m`, `5m`, `1h`, `6h`, `12h`, `24h`, `7d`, `30d` (minimum 5s).
+Intervals accept any `<number><s|m|h>` format (e.g. `30s`, `5m`, `1h`, `24h`). Minimum 5s.
 
 ## Create a Limit Order
 
@@ -54,6 +57,15 @@ twak automate add \
   --json
 ```
 
+## Optional Flags
+
+| Flag | Description |
+|------|-------------|
+| `--max-runs <n>` | Stop after N executions. Automation deactivates automatically. |
+| `--expires <date>` | Expiry date in ISO 8601 format (e.g. `2026-04-01`). Automation deactivates after this date. |
+| `--chain <chain>` | Chain key (default: `ethereum`). |
+| `--json` | Structured JSON output. |
+
 ## List Automations
 
 ```bash
@@ -79,12 +91,30 @@ twak watch --dry-run         # check conditions without executing
 twak watch --json            # structured output
 ```
 
+`watch` requires the wallet password to execute swaps. Password is auto-resolved from the OS keychain if configured.
+
+## Running under the MCP server
+
+When driving twak over MCP (`twak serve`), automations created with the `create_automation` action only execute if the server was launched with `--watch`.
+
+```bash
+twak serve --watch                      # polls every 60s by default
+twak serve --watch --watch-interval 5m  # custom poll interval
+```
+
+Without `--watch` (or a separate `twak watch` process), automations are saved but never fire.
+
+- Automations execute using the local agent wallet; the watcher stays idle in WalletConnect mode, where each swap needs interactive approval.
+- To execute a saved automation once immediately, use the `run_automation_now` action.
+- Don't run both `twak serve --watch` and `twak watch` against the same wallet / `~/.twak/automations.json` — both loops would fire the same automation.
+
 ## Storage
 
 Automations are stored in `~/.twak/automations.json`. Each entry includes:
 - `id` — unique identifier
 - `type` — `dca` or `limit`
-- `status` — `active`, `paused`, or `completed`
+- `active` — whether the automation is currently enabled
 - `fromToken`, `toToken`, `chain`, `amount`
-- `interval` (DCA) or `targetPrice` + `condition` (limit)
-- `lastExecuted`, `executionCount`
+- `intervalMs` (DCA) or `targetPrice` + `condition` (limit)
+- `lastRunAt`, `runCount`
+- `maxRuns`, `expiresAt` (optional)

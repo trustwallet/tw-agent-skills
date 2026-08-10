@@ -18,16 +18,21 @@ Read the reference that matches the user's task:
 | Task | Reference | When to read |
 |------|-----------|--------------|
 | Install, auth, env vars | `references/setup.md` | First time setup, "install twak", "configure API keys" |
+| List supported chains, chain keys | `references/setup.md` | "what chains are supported", "list chains", "show chain keys", "what is the chain key for X" |
 | Create wallet, keychain, sign | `references/wallet.md` | "create wallet", "keychain", "sign message", "wallet status" |
 | Balance, holdings, portfolio | `references/balance.md` | "check balance", "portfolio", "token holdings" |
 | Send tokens, ENS transfers | `references/send.md` | "send ETH", "transfer to", "vitalik.eth" |
 | Swap tokens, cross-chain | `references/swap.md` | "swap ETH for USDC", "bridge", "cross-chain swap" |
+| Buy/sell crypto with fiat | `references/onramp.md` | "buy ETH with USD", "onramp", "offramp", "fiat", "sell crypto for cash" |
 | Prices, trending, DApps | `references/market.md` | "price of", "trending tokens", "dapps" |
 | Transaction history | `references/history.md` | "tx history", "transaction details" |
 | Price alerts | `references/alerts.md` | "alert when ETH", "price alert", "notify me" |
 | DCA & limit orders | `references/automations.md` | "DCA", "dollar cost average", "limit order", "recurring swap", "buy when price" |
 | ERC-20 approve/revoke | `references/erc20.md` | "approve spender", "check allowance", "revoke" |
 | Token risk checks | `references/token-risk.md` | "is this token safe", "honeypot check", "audit status" |
-| x402 micropayments | `references/x402.md` | "x402", "micropayment", "payment-gated API" |
+| x402 micropayments | `references/x402.md` | "x402", "micropayment", "payment-gated API", "preview payment", "quote endpoint cost", "how much does this API charge" |
+| BNB Hack competition register/status | `references/compete.md` | "register for the competition", "BNB hack", "AI trading agent edition", "compete", "registration status" |
+| Register/manage ERC-8004 agent identities | `references/erc8004.md` | "register agent identity", "erc8004", "agent NFT", "agentURI", "agent metadata", "identity registry", "mint agent" |
+| Agent job escrows (ERC-8183 Agentic Commerce) | `references/erc8183.md` | "erc8183", "agentic commerce", "job escrow", "create job", "fund job", "submit deliverable", "settle job", "agent payment escrow", "evaluator router" |
 
 Read `references/setup.md` alongside any other reference if the CLI isn't installed yet.
