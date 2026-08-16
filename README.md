@@ -2,7 +2,7 @@
 
 AI agent skills for Trust Wallet — API endpoints, CLI tools, and open-source libraries across **100+ chains**.
 
-3 skills with progressive reference loading: descriptions are always in context (~300 words), detailed references load only when needed.
+A collection of skills that provide focused functionality (API actions, CLI commands, and SDK references) with progressive reference loading: short descriptions are provided in-context (~300 words) and detailed reference documents are loaded only when needed.
 
 ## Install
 
@@ -10,7 +10,7 @@ AI agent skills for Trust Wallet — API endpoints, CLI tools, and open-source l
 npx skills add trustwallet/tw-agent-skills
 ```
 
-This auto-detects your coding agent. To install for a specific agent:
+This auto-detects your coding agent. To install for a specific agent, run one of the following:
 
 ```bash
 npx skills add trustwallet/tw-agent-skills -a claude-code
@@ -23,7 +23,7 @@ npx skills add trustwallet/tw-agent-skills -a opencode
 npx skills add trustwallet/tw-agent-skills -a roo
 ```
 
-Install a single skill:
+Install a single skill by ID or name (example uses the `api` skill):
 
 ```bash
 npx skills add trustwallet/tw-agent-skills -s api
@@ -31,7 +31,7 @@ npx skills add trustwallet/tw-agent-skills -s api
 
 ## Prerequisites
 
-Trust Wallet API credentials from [portal.trustwallet.com](https://portal.trustwallet.com):
+Trust Wallet API credentials from https://portal.trustwallet.com:
 
 ```env
 TWAK_ACCESS_ID=your_access_id
@@ -45,22 +45,24 @@ TWAK_HMAC_SECRET=your_hmac_secret
 | Skill | Description | References |
 |-------|-------------|------------|
 | [`api`](skills/api/SKILL.md) | Trust Wallet REST API — token search, prices, swap quotes, market data, security | setup, token-info, swap-quote, market-data, security |
-| [`wallet`](skills/wallet/SKILL.md) | `twak` CLI — wallets, balances, swaps, transfers, alerts, ERC-20, x402 | setup, wallet, balance, send, swap, market, history, alerts, erc20, token-risk, x402 |
-| [`sdk`](skills/sdk/SKILL.md) | Open-source libraries — Wallet Core, Web3 Provider, deep links, assets, Barz | wallet-core, trust-web3-provider, trust-developer, assets, barz |
+| [`wallet`](skills/wallet/SKILL.md) | `twak` CLI — wallet management, balances, swaps, transfers, transaction history, alerts, ERC-20 utilities | setup, wallet, balance, send, swap, market, history, alerts, erc20, token-risk |
+| [`sdk`](skills/sdk/SKILL.md) | Open-source libraries — Wallet Core, Trust Web3 Provider, deep links, assets, barz | wallet-core, trust-web3-provider, trust-developer, assets, barz |
 
 **14 API actions** across 3 skills with 21 reference documents covering 100+ chains.
 
 ## How It Works
 
-Each skill uses a thin SKILL.md router (~30 lines) that points to the right reference based on the user's task. Claude reads only the relevant reference file — same content as before, but with 7x less always-in-context overhead (3 descriptions vs 21).
+Each skill uses a thin SKILL.md router (~30 lines) that maps incoming requests to the appropriate reference document or action. The router provides a short, context-rich description by default and only loads the longer reference files when the user's task requires detailed instructions. This progressive-loading approach keeps responses concise while still providing deep reference material on demand.
+
+Example layout for a single skill:
 
 ```
-api/
+skills/api/
 ├── SKILL.md              ← routing table
 └── references/
-    ├── setup.md          ← auth, chains, asset IDs
-    ├── token-info.md     ← search, assets, coin status
-    ├── swap-quote.md     ← quotes, step tx, providers
+    ├── setup.md          ← auth, supported chains, asset IDs
+    ├── token-info.md     ← token search, asset metadata, coin status
+    ├── swap-quote.md     ← quotes, step-by-step swap flow, providers
     ├── market-data.md    ← prices, trending, categories
     └── security.md       ← validation, risk analysis
 ```
