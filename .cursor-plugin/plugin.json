@@ -10,7 +10,15 @@
   "homepage": "https://github.com/trustwallet/tw-agent-skills",
   "repository": "https://github.com/trustwallet/tw-agent-skills",
   "license": "MIT",
-  "keywords": ["trust-wallet", "wallet", "crypto", "walletconnect", "swap", "onramp"],
+  "logo": "assets/logo.png",
+  "keywords": [
+    "trust-wallet",
+    "wallet",
+    "crypto",
+    "walletconnect",
+    "swap",
+    "onramp"
+  ],
   "skills": "./skills/",
   "mcpServers": "./mcp.json"
 }

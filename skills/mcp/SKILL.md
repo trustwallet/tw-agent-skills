@@ -5,15 +5,23 @@ description: Use Trust Wallet through the `twak` MCP server (bundled with the Tr
 
 # Trust Wallet through the `twak` MCP server
 
-The `twak` MCP server (started by this plugin) exposes Trust Wallet actions as
-tools: `get_wallet_status`, `switch_wallet_mode`, `list_addresses`,
-`get_address`, `wallet_portfolio`, `wallet_balance`, `get_balance`,
+The `twak` MCP server (started by this plugin; some hosts show it as
+`plugin-trust-wallet-twak`) exposes Trust Wallet actions as tools:
+`get_wallet_status`, `switch_wallet_mode`, `list_addresses`, `get_address`,
+`wallet_portfolio`, `wallet_balance`, `get_balance`, `get_token_holdings`,
 `transfer`, `get_swap_quote`, `swap`, `get_onramp_quote`, `get_onramp_url`,
-`get_offramp_quote`, `get_offramp_url`, `check_token_risk`,
-`get_transaction_history` and more. The tools are listed even before setup.
+`get_offramp_quote`, `get_offramp_url`, `confirm_offramp_transfer`,
+`check_token_risk`, `get_transaction_history` and more. The tools are listed
+even before setup.
 
 When you run the CLI yourself, use the same version as the server:
-`npx -y @trustwallet/cli@0.24.1 <command> --json`.
+`npx -y @trustwallet/cli@0.24.1 <command> --json`. Do not install another
+version, and do not run `twak setup`: it registers a second `twak` server
+next to this one, and the two would share the same WalletConnect session.
+
+If the `twak` tools are missing, the server did not start: it needs Node.js
+and `npx` on this computer. Tell the user, and check that
+`npx -y @trustwallet/cli@0.24.1 --version` prints `0.24.1`.
 
 **On Grok Bot, read [On Grok Bot](#on-grok-bot) first**: setup differs there.
 
@@ -21,18 +29,23 @@ When you run the CLI yourself, use the same version as the server:
 
 Call `get_wallet_status`.
 
-- It returns `state` (`unbound`, `local`, `wc-pairing`, `wc-connected`) and
-  `twakHome`, the folder the server keeps its files in (wallet, WalletConnect
-  session, credentials).
+- It returns `state` and `twakHome`, the folder the server keeps its files in
+  (wallet, WalletConnect session, credentials):
+  - `unbound`: no wallet in use yet (section 2).
+  - `wc-connected`: the user's Trust Wallet app is connected.
+  - `wc-pairing`: a pairing is waiting for the user's approval.
+  - `local`: an agent wallet **already exists and is in use** (the server
+    uses it automatically at startup). Do not create another one; tell the
+    user it is active and confirm with them before any transaction.
 - If a tool returns `code` `CREDENTIALS_MISSING`, the Trust Wallet API
   credentials are not set up. The user gets them at
   https://portal.trustwallet.com/dashboard/apps (an access ID and an HMAC
-  secret). Ask the user to run `twak setup` (or `twak init`) in their own
-  terminal. If they prefer you to do it, have them set `TWAK_ACCESS_ID` and
-  `TWAK_HMAC_SECRET` in your environment without pasting them in chat, then
-  run `npx -y @trustwallet/cli@0.24.1 init --json` (expected:
-  `{ "configured": true, ... }`). The tools work as soon as the credentials
-  are saved, with no restart.
+  secret). Have the user set `TWAK_ACCESS_ID` and `TWAK_HMAC_SECRET` in your
+  environment, never pasting them in chat, then run
+  `TWAK_HOME=<twakHome> npx -y @trustwallet/cli@0.24.1 init --json` with the
+  `twakHome` the server reported (expected: `{ "configured": true, ... }`).
+  The tools work as soon as the credentials are saved in that folder, with
+  no restart.
 
 ## 2. Choose how transactions are signed
 
@@ -47,7 +60,11 @@ not pair or create a wallet before they do.
 | Keys | stay in the user's Trust Wallet app | a separate wallet created for you, encrypted in `twakHome` |
 | Each send, swap or approval | approved by the user in the app | signed by you, no approval |
 | Chains for transactions | EVM chains only | all supported chains |
-| Automations (DCA, limit orders), which run unattended | no | yes |
+
+Automations (DCA, limit orders) need the agent wallet **and** a running
+watcher (`twak serve --watch` or `twak watch`), which this plugin does not
+start: rules can be saved, but only run when the user asks you to run one now
+(`run_automation_now`).
 
 ### Trust Wallet app (WalletConnect)
 
@@ -58,21 +75,25 @@ You never hold keys.
    lasts about 7 days, unless you switch modes (see below).
 2. Call `switch_wallet_mode` with `{"mode": "walletconnect"}`.
 3. Give the user `pairing.deepLink` as a clickable link (phone users), and
-   show the returned QR image (desktop users scan it with their phone). The
-   pairing expires after 5 minutes; call `switch_wallet_mode` again for a
-   fresh one.
+   show the QR image the tool returns (desktop users scan it with their
+   phone); do not draw your own QR. The pairing expires after 5 minutes, at
+   `pairing.expiresAt` (Unix time in milliseconds).
 4. Tell the user the app shows the connection as `TWAK`
    (`portal.trustwallet.com`) marked "not verified": this is expected, since
    WalletConnect only verifies browser-based apps.
-5. Poll `get_wallet_status` every few seconds until `state` is
-   `wc-connected`.
+5. Ask the user to tell you once they have approved, then call
+   `get_wallet_status` to confirm `state` is `wc-connected`. If you poll
+   instead, do it sparingly (each call while pairing returns the QR image
+   again) and stop at `pairing.expiresAt`. A rejected or expired pairing
+   stays in `wc-pairing`: ask the user before starting a new one.
 
 Only the wallet's **EVM** accounts are connected (Ethereum, BNB Chain, Base,
 Arbitrum, Polygon, ...). `list_addresses`, `wallet_portfolio` and
 `wallet_balance` therefore cover EVM chains only: when you show balances,
 say so, since the user's Trust Wallet may also hold Bitcoin, Solana, TRON or
 other assets that are not visible here. For those, ask for the address and
-use `get_balance`, which works for any address on any chain.
+use `get_balance` (one asset at a time) or `get_token_holdings` (the tokens
+an address holds), on any chain twak supports.
 
 ### Agent wallet
 
@@ -97,13 +118,18 @@ Then:
    number; tell the user these rules before they choose it. Ask them to
    write it down: restoring a backup of the wallet needs it.
 2. Create the wallet:
-   `npx -y @trustwallet/cli@0.24.1 wallet create --no-keychain --json`.
-   The output lists `{ address, chain }` per chain.
+   `TWAK_HOME=<twakHome> npx -y @trustwallet/cli@0.24.1 wallet create --no-keychain --json`,
+   with the `twakHome` the server reported. The output lists
+   `{ address, chain }` per chain. `CREDENTIALS_MISSING` or "No wallet
+   password" here means your shell does not have the credentials or
+   `TWAK_WALLET_PASSWORD`.
 3. Call `switch_wallet_mode` with `{"mode": "local"}`: a wallet created after
-   the server started is used only after this switch. `PASSWORD_MISSING`
-   means the server does not have `TWAK_WALLET_PASSWORD`; `WALLET_NOT_FOUND`
-   means it looks in another folder than the one you created the wallet in
-   (compare `twakHome`).
+   the server started is used only after this switch.
+   - `PASSWORD_MISSING`: the server does not have `TWAK_WALLET_PASSWORD`.
+   - `WALLET_AUTH_FAILED`: the server's password does not match the one the
+     wallet was created with.
+   - `WALLET_NOT_FOUND`: the server looks in another folder than the one you
+     created the wallet in (compare `twakHome`).
 4. Show the user the address to fund, from `get_address` or
    `list_addresses`.
 
@@ -115,12 +141,18 @@ the app, and present the new pairing as expected.
 
 ## 3. Operations
 
-- **Balances**: `wallet_portfolio`, or `get_balance` with an address and
-  chain (works for any address, without connecting).
+- **Balances**: `wallet_portfolio`, or `get_balance` / `get_token_holdings`
+  with an address and chain (any address, without connecting).
 - **Receive**: `get_address` (or `list_addresses`) for the requested chain.
 - **Send**: `transfer`. **Swap**: `get_swap_quote` first, show the quote,
-  then `swap`. **Buy/sell**: `get_onramp_quote` + `get_onramp_url`,
-  `get_offramp_quote` + `get_offramp_url`.
+  then `swap`. **Buy**: `get_onramp_quote` + `get_onramp_url`.
+- **Sell** (EVM chains only), three steps: `get_offramp_quote`, then
+  `get_offramp_url` (the user completes the provider's checkout in the
+  browser), then `confirm_offramp_transfer` to send the crypto to the
+  provider's deposit address. Ask the user to read you the deposit address
+  and the exact amount the provider shows, and confirm both with them before
+  calling it: it is a third-party address, and a wrong amount invalidates the
+  order.
 - Chains are named by chain key (`ethereum`, `bsc`, `base`, `solana`, ...);
   every `chain` field in results uses the same keys.
 - Swaps start only on EVM chains and Solana (`CHAIN_UNSUPPORTED` otherwise);
@@ -136,11 +168,20 @@ WalletConnect mode, also:
 - `USER_REJECTED` means the user declined it in the app. Do not retry; ask
   them what to do.
 - `WC_REQUEST_FAILED` means the wallet returned an error; report its message.
-- `WALLET_NOT_BOUND` means the connection ended: reconnect.
+- `WALLET_NOT_BOUND` means the connection ended: `get_wallet_status` shows
+  why in `lastError`. Reconnect (section 2).
 
 ## On Grok Bot
 
-Grok Bot runs this server on the Bot's cloud computer. Three things differ.
+Grok Bot runs this server on the Bot's cloud computer. Three things differ,
+and Trust Wallet is for personal Bots only.
+
+**Personal Bots only.** If you are a shared (team) Bot, tell the user Trust
+Wallet is not supported on shared Bots, and do not set it up: secrets added
+to a shared Bot are used in every teammate's chat, and in group chats and
+channels everyone shares one computer, so one wallet. On a personal Bot, tell
+the user that all their Bots share this computer: any of them could use the
+agent wallet.
 
 **1. Keep twak's files in `/workspace`.** It is the folder Grok documents as
 durable. Before anything else, ask the user to add a Bot secret named
@@ -150,12 +191,15 @@ durable. Before anything else, ask the user to add a Bot secret named
 add them as Bot secrets, never in chat: `TWAK_ACCESS_ID` and
 `TWAK_HMAC_SECRET` (from https://portal.trustwallet.com/dashboard/apps), plus
 `TWAK_WALLET_PASSWORD` for an agent wallet (at least 8 characters, with a
-lowercase letter, an uppercase letter and a number). No `init` is needed. Treat secret
-values as readable by anything running on this computer.
+lowercase letter, an uppercase letter and a number). No `init` is needed:
+Bot secrets have been observed to reach both this server (when it starts)
+and your shell. Treat secret values as readable by anything running on this
+computer.
 
 **3. Restart the connector after adding or changing a secret.** The server
 reads secrets only when it starts. Offer to restart the Trust Wallet
-connector, then check before writing anything:
+connector (observed to work; Grok's docs do not describe it), then check
+before writing anything:
 
 - `get_wallet_status` must report `twakHome` `/workspace/.twak`. If it
   reports another folder, or a tool returns `CREDENTIALS_MISSING`, the
@@ -166,7 +210,5 @@ connector, then check before writing anything:
 
 Other notes:
 
-- Show the pairing QR on a Page for desktop users; the deep link works from
-  Grok on the phone.
-- On a team Bot, each person's chat uses the wallet on that person's own
-  computer.
+- The pairing deep link also works when the user chats with Grok on their
+  phone.

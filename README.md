@@ -34,9 +34,9 @@ npx skills add trustwallet/tw-agent-skills -s api
 This repository is also a Cursor Marketplace plugin (`.cursor-plugin/plugin.json`), which Grok Bot installs from its Connect apps. It bundles these skills and the `twak` MCP server (`npx -y @trustwallet/cli@<version> serve`, pinned in `mcp.json`). The [`mcp`](skills/mcp/SKILL.md) skill guides the agent through setup and two ways of signing:
 
 - **Trust Wallet app (WalletConnect)**, recommended: keys stay in the user's Trust Wallet app, which approves every transaction.
-- **Agent wallet**: a new, separate wallet the agent signs with and the user funds (needed for unattended automations). Never give an agent your main wallet's recovery phrase.
+- **Agent wallet**: a new, separate wallet the agent signs with, without approval, and the user funds. Never give an agent your main wallet's recovery phrase.
 
-On Grok Bot, the skill has the user add Bot secrets (API credentials, `TWAK_HOME=/workspace/.twak` so twak's files stay in Grok's durable folder, and the agent wallet password), then checks the server picked them up before pairing or creating a wallet.
+On Grok Bot (personal Bots only), the skill has the user add Bot secrets (API credentials, `TWAK_HOME=/workspace/.twak` so twak's files stay in Grok's durable folder, and the agent wallet password), then checks the server picked them up before pairing or creating a wallet.
 
 ## Prerequisites
 
@@ -58,7 +58,7 @@ TWAK_HMAC_SECRET=your_hmac_secret
 | [`sdk`](skills/sdk/SKILL.md) | Open-source libraries — Wallet Core, Web3 Provider, deep links, assets, Barz | wallet-core, trust-web3-provider, trust-developer, assets, barz |
 | [`mcp`](skills/mcp/SKILL.md) | `twak` MCP server (plugin, Grok Bot) — setup, Trust Wallet app via WalletConnect or agent wallet, balances, send, swap, buy/sell | — |
 
-**14 API actions** across 3 skills with 21 reference documents covering 100+ chains.
+**14 API actions** across 4 skills with 27 reference documents covering 100+ chains.
 
 ## How It Works
 
