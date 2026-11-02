@@ -9,6 +9,8 @@ Install and configure the Trust Wallet Agent Kit CLI for multichain crypto opera
 npm install -g @trustwallet/cli
 ```
 
+Under the Trust Wallet plugin, whose MCP server pins a version, skip the install and use `npx -y @trustwallet/cli@0.24.3` instead of `twak`, with the server's `TWAK_HOME` (see the `trust-wallet-mcp` skill).
+
 Verify installation:
 
 ```bash
@@ -74,11 +76,11 @@ Once env vars are set, run init to persist credentials to the encrypted local st
 twak init
 ```
 
-This reads from the environment and saves to `~/.twak/credentials.json` (mode 0600) with the HMAC secret additionally stored in the OS keychain (macOS Keychain / Linux Secret Service / Windows Credential Manager).
+This reads from the environment and saves to `credentials.json` in the twak folder (mode 0600) with the HMAC secret additionally stored in the OS keychain (macOS Keychain / Linux Secret Service / Windows Credential Manager).
 
 `twak init` options:
 
-- `--wc-project-id <id>` — store a WalletConnect project ID alongside the credentials (also read from `WALLETCONNECT_PROJECT_ID`)
+- `--wc-project-id <id>` — store a WalletConnect project ID override alongside the credentials (also read from `WALLETCONNECT_PROJECT_ID`); optional, twak uses Trust Wallet's project by default
 - `--json` — JSON output: `{ configured: true, source: 'env' | 'cli' | 'file' }`; when `source` is `'file'` (existing config, nothing written) it also includes `accessIdPreview` and `walletConnectProjectId`
 - `--api-key <key>` / `--api-secret <secret>` — pass credentials directly; avoid these (shell history exposure), env vars are preferred
 
@@ -123,10 +125,12 @@ twak wallet balance --chain ethereum --json
 
 ## Credential Storage
 
+All files live in the twak folder: `$TWAK_HOME` when set, otherwise `~/.twak`. Set `TWAK_HOME` for the MCP server and for the commands you run alike (`twak setup` run with it set writes it into the MCP entries it configures). On hosts whose home folder is not durable, point it at a durable folder (Grok Bot: `/workspace/.twak`).
+
 | Store | Path | Protection |
 |-------|------|-----------|
-| API credentials | `~/.twak/credentials.json` | File mode 0600, HMAC secret also in OS keychain |
-| Wallet mnemonic | `~/.twak/wallet.json` | AES-256-GCM encrypted with user password |
+| API credentials | `credentials.json` | File mode 0600, HMAC secret also in OS keychain |
+| Wallet mnemonic | `wallet.json` | AES-256-GCM encrypted with user password |
 | Wallet password | OS keychain | macOS Keychain / Linux Secret Service / Windows Credential Manager |
 
 ## Supported Chains
@@ -143,12 +147,12 @@ For structured output (useful for scripting or agents):
 twak chains --json
 ```
 
-JSON output fields: `key` (use as `--chain` argument), `name`, `symbol`, `namespace`, `chainId`, `coinId`.
+JSON output fields: `chain` (the chain key, use as `--chain` argument), `name`, `symbol`, `namespace`, `coinId`. `--chain` also accepts aliases, CAIP-2 IDs (`eip155:56`) and EVM chain IDs (`56`); outputs always use the key.
 
 Example entry:
 
 ```json
-{ "key": "ethereum", "name": "Ethereum", "symbol": "ETH", "namespace": "eip155", "chainId": "ethereum", "coinId": 60 }
+{ "chain": "ethereum", "name": "Ethereum", "symbol": "ETH", "namespace": "eip155", "coinId": 60 }
 ```
 
 25+ chains are supported across EVM (eip155), Solana, Bitcoin (bip122), TRON, Cosmos, NEAR, Aptos, TON, and Sui namespaces.

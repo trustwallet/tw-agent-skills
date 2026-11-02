@@ -19,7 +19,9 @@ twak wallet create --password <pw> --skip-password-check    # skip strength vali
 
 Password must be at least 8 characters with mixed case and a number. Use `--skip-password-check` only for test wallets.
 
-With `--json`, output is `{ addresses: [{ chainId, address }] }` — the derived address for every supported chain. Human output shows only the chain count. Fails with `WALLET_EXISTS` if a wallet already exists (back up and delete `~/.twak/wallet.json` to recreate).
+With `--json`, output is `{ addresses: [{ address, chain }] }` — the derived address for every supported chain (`chain` is the chain key). Human output shows only the chain count. Fails with `WALLET_EXISTS` if a wallet already exists (back up and delete `wallet.json` in the twak folder to recreate).
+
+The password can also come from `TWAK_WALLET_PASSWORD` instead of `--password`.
 
 ## Get Addresses
 
@@ -28,7 +30,7 @@ twak wallet address --chain ethereum --json
 twak wallet addresses --json                # all chains
 ```
 
-Both accept `--password <pw>` (falls back to `TWAK_WALLET_PASSWORD` / OS keychain).
+Both accept `--password <pw>` (falls back to `TWAK_WALLET_PASSWORD` / OS keychain). `--json` output: `{ chain, address }` for `address`, `{ addresses: [{ address, chain }] }` for `addresses`.
 
 ## Check Status
 
@@ -36,7 +38,7 @@ Both accept `--password <pw>` (falls back to `TWAK_WALLET_PASSWORD` / OS keychai
 twak wallet status --json
 ```
 
-Output: `{ agentWallet: 'configured' | 'not configured', keychainPassword: 'stored' | 'not stored', chains, supportedChains, createdAt?, addressCount? }` — `chains` and `supportedChains` are numbers (count of supported chains); `createdAt` and `addressCount` appear only when a wallet exists.
+Output: `{ agentWallet: 'configured' | 'not configured', keychainPassword: 'stored' | 'not stored', chains, supportedChains, createdAt?, addressCount?, walletConnect }` — `chains` and `supportedChains` are numbers (count of supported chains); `createdAt` and `addressCount` appear only when a wallet exists. `walletConnect` is `{ connected: false }` or `{ connected: true, peer, address, expiresAt }` (ISO timestamp) for the stored WalletConnect session (see below). Accepts `--project-id <id>`.
 
 ## Register with Backend
 
@@ -74,14 +76,28 @@ twak wallet keychain delete
 
 ## WalletConnect
 
-Connect an external wallet (e.g. Trust Wallet mobile) for interactive transaction approvals:
+Connect an external wallet (e.g. Trust Wallet mobile) for interactive transaction approvals. The private keys stay in that wallet; every transaction is approved there.
 
 ```bash
-twak wallet connect --project-id <id>
-twak wallet connect --project-id <id> --chains "eip155:1,eip155:56"
-twak wallet connect --project-id <id> --timeout 120
+twak wallet connect
+twak wallet connect --chains "ethereum,bsc"
+twak wallet connect --timeout 120
+twak wallet disconnect
 ```
 
-- `--project-id <id>` — WalletConnect project ID (or set `WALLETCONNECT_PROJECT_ID` env var)
-- `--chains <list>` — Comma-separated CAIP-2 chain IDs (default: major EVM chains)
-- `--timeout <seconds>` — Connection timeout (default: 300)
+`connect` prints a QR code and deep links, then waits for approval. `--json` output: `{ connected, address, chain, peer }` (`chain` is the chain key of the session's first account).
+
+- `--project-id <id>` — WalletConnect project ID override (default: Trust Wallet's project; also `WALLETCONNECT_PROJECT_ID` or `twak init --wc-project-id`). No configuration is needed.
+- `--chains <list>` — Comma-separated chains: chain keys, aliases or CAIP-2 IDs (default: all supported EVM chains); an unknown chain is rejected with `CHAIN_UNSUPPORTED`
+- `--timeout <seconds>` — Connection timeout, a positive whole number (default: 300); anything else fails with `VALIDATION_ERROR`
+
+Session behaviour:
+
+- **One shared session.** The session is stored in `walletconnect.json` in the twak folder and shared by every `twak` command: a session paired with `twak wallet connect` is reused by `twak serve`, and survives restarts until it expires (about 7 days) or is revoked.
+- **Pairing replaces the previous session.** `connect` revokes any stored session first.
+- **`twak wallet disconnect`** revokes the stored session. `--json` output: `{ disconnected }` (`false` when there was no session). Accepts `--project-id <id>`.
+- **EVM chains only.** Non-EVM chains cannot be used through WalletConnect.
+- **Approvals.** Trust Wallet does not send a push notification for signing requests: the user must open the app to see and approve them. Requests expire after about 5 minutes.
+- **Pairing outcome.** `connect` fails as soon as the pairing ends without a connection: `USER_REJECTED` (declined in the wallet), `WC_PAIRING_EXPIRED` (not approved within 5 minutes) or `WC_PAIRING_FAILED`; `WC_NOT_CONNECTED` when `--timeout` passes first.
+- **Rejections.** A request declined in the wallet fails with `errorCode: "USER_REJECTED"`; other wallet-side failures with `WC_REQUEST_FAILED`. Do not retry a rejected request without asking the user.
+- **"Not verified".** The wallet shows the connection (`TWAK`, `portal.trustwallet.com`) as not verified. This is expected: WalletConnect only verifies browser-based apps.

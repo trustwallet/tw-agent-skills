@@ -7,6 +7,8 @@ description: Trust Wallet CLI (`twak`) — install, create wallets, check balanc
 
 Command-line interface for multichain crypto wallet operations. Install with `npm install -g @trustwallet/cli`.
 
+If the Trust Wallet plugin's `twak` MCP server is running (see the `trust-wallet-mcp` skill), do not install the CLI or run `twak setup`: run commands with the same version as that server, `npx -y @trustwallet/cli@0.24.3 <command>`, and the same `TWAK_HOME`, since both use the same files.
+
 ## Quick Start
 
 Read `references/setup.md` for installation and authentication.
@@ -47,6 +49,6 @@ Read `references/setup.md` alongside any other reference if the CLI isn't instal
 - `--host <host>` — REST bind host (default `127.0.0.1`; use `0.0.0.0` to expose externally)
 - `--password <password>` — wallet password (falls back to `TWAK_WALLET_PASSWORD` env var, then OS keychain)
 - `--auto-lock <minutes>` — auto-lock the wallet after N minutes of inactivity
-- `--wc-project-id <id>` — WalletConnect project ID (or set `WALLETCONNECT_PROJECT_ID`)
+- `--wc-project-id <id>` — WalletConnect project ID override (default: Trust Wallet's project; or set `WALLETCONNECT_PROJECT_ID`). A stored WalletConnect session (see `references/wallet.md`) is resumed at startup.
 - `--watch` — background watcher that fires DCA/limit automations; requires the local agent wallet (see `references/automations.md`)
 - `--watch-interval <duration>` — automation poll interval when `--watch` is set, e.g. `30s`, `5m`, `1h` (default 60s, min 5s)

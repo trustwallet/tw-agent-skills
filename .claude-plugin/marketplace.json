@@ -15,11 +15,9 @@
       "source": "./",
       "strict": false,
       "skills": [
-        "./skills/trust-web3-provider",
-        "./skills/wallet-core",
-        "./skills/assets",
-        "./skills/barz",
-        "./skills/trust-developer"
+        "./skills/api",
+        "./skills/wallet",
+        "./skills/sdk"
       ]
     }
   ]

@@ -95,7 +95,7 @@ When a limit order fires, it is deactivated (`active: false`), not deleted — `
 On failure, automate commands emit `{ error, errorCode }` on stdout (with `--json`) and exit with code 1. Error codes:
 
 - `VALIDATION_ERROR` — `--interval`/`--price` both or neither, non-positive `--amount`, interval below 5s, non-positive-integer `--max-runs`, invalid `--expires` date
-- `CHAIN_UNSUPPORTED` — unknown chain key, or a non-EVM/non-Solana chain (add)
+- `CHAIN_UNSUPPORTED` — unknown chain, a testnet chain, or a chain swaps cannot start on: twak signs swap transactions on EVM chains and Solana only (add)
 - `AUTOMATION_NOT_FOUND` — unknown automation id (delete/pause/resume)
 
 ## Execute Automations
@@ -126,11 +126,11 @@ Without `--watch` (or a separate `twak watch` process), automations are saved bu
 
 - Automations execute using the local agent wallet; the watcher stays idle in WalletConnect mode, where each swap needs interactive approval.
 - To execute a saved automation once immediately, use the `run_automation_now` action.
-- Don't run both `twak serve --watch` and `twak watch` against the same wallet / `~/.twak/automations.json` — both loops would fire the same automation.
+- Don't run both `twak serve --watch` and `twak watch` against the same wallet / `automations.json` — both loops would fire the same automation.
 
 ## Storage
 
-Automations are stored in `~/.twak/automations.json`. Each entry includes:
+Automations are stored in `automations.json` in the twak folder. A stored automation whose chain is no longer supported is skipped and reported as a warning (stderr for `automate list`, the watcher log). Each entry includes:
 - `id` — unique identifier
 - `type` — `dca` or `limit`
 - `active` — whether the automation is currently enabled
