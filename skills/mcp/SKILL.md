@@ -15,13 +15,13 @@ The `twak` MCP server (started by this plugin; some hosts show it as
 even before setup.
 
 When you run the CLI yourself, use the same version as the server:
-`npx -y @trustwallet/cli@0.24.1 <command> --json`. Do not install another
+`npx -y @trustwallet/cli@0.24.2 <command> --json`. Do not install another
 version, and do not run `twak setup`: it registers a second `twak` server
 next to this one, and the two would share the same WalletConnect session.
 
 If the `twak` tools are missing, the server did not start: it needs Node.js
 and `npx` on this computer. Tell the user, and check that
-`npx -y @trustwallet/cli@0.24.1 --version` prints `0.24.1`.
+`npx -y @trustwallet/cli@0.24.2 --version` prints `0.24.2`.
 
 **On Grok Bot, read [On Grok Bot](#on-grok-bot) first**: setup differs there.
 
@@ -42,7 +42,7 @@ Call `get_wallet_status`.
   https://portal.trustwallet.com/dashboard/apps (an access ID and an HMAC
   secret). Have the user set `TWAK_ACCESS_ID` and `TWAK_HMAC_SECRET` in your
   environment, never pasting them in chat, then run
-  `TWAK_HOME=<twakHome> npx -y @trustwallet/cli@0.24.1 init --json` with the
+  `TWAK_HOME=<twakHome> npx -y @trustwallet/cli@0.24.2 init --json` with the
   `twakHome` the server reported (expected: `{ "configured": true, ... }`).
   The tools work as soon as the credentials are saved in that folder, with
   no restart.
@@ -76,16 +76,19 @@ You never hold keys.
 2. Call `switch_wallet_mode` with `{"mode": "walletconnect"}`.
 3. Give the user `pairing.deepLink` as a clickable link (phone users), and
    show the QR image the tool returns (desktop users scan it with their
-   phone); do not draw your own QR. The pairing expires after 5 minutes, at
-   `pairing.expiresAt` (Unix time in milliseconds).
+   phone); do not draw your own QR. The pairing expires after 5 minutes. If
+   the user asks to see the QR again, call `get_wallet_status` with
+   `{"showQr": true}`.
 4. Tell the user the app shows the connection as `TWAK`
    (`portal.trustwallet.com`) marked "not verified": this is expected, since
    WalletConnect only verifies browser-based apps.
-5. Ask the user to tell you once they have approved, then call
-   `get_wallet_status` to confirm `state` is `wc-connected`. If you poll
-   instead, do it sparingly (each call while pairing returns the QR image
-   again) and stop at `pairing.expiresAt`. A rejected or expired pairing
-   stays in `wc-pairing`: ask the user before starting a new one.
+5. Poll `get_wallet_status` every few seconds until `state` leaves
+   `wc-pairing`:
+   - `wc-connected`: the user approved.
+   - `unbound`: the pairing ended without a connection; `lastError.code`
+     says why: `USER_REJECTED` (declined in the app), `WC_PAIRING_EXPIRED`
+     (not approved within 5 minutes) or `WC_PAIRING_FAILED`. Tell the user,
+     and ask before starting a new pairing.
 
 Only the wallet's **EVM** accounts are connected (Ethereum, BNB Chain, Base,
 Arbitrum, Polygon, ...). `list_addresses`, `wallet_portfolio` and
@@ -118,7 +121,7 @@ Then:
    number; tell the user these rules before they choose it. Ask them to
    write it down: restoring a backup of the wallet needs it.
 2. Create the wallet:
-   `TWAK_HOME=<twakHome> npx -y @trustwallet/cli@0.24.1 wallet create --no-keychain --json`,
+   `TWAK_HOME=<twakHome> npx -y @trustwallet/cli@0.24.2 wallet create --no-keychain --json`,
    with the `twakHome` the server reported. The output lists
    `{ address, chain }` per chain. `CREDENTIALS_MISSING` or "No wallet
    password" here means your shell does not have the credentials or
@@ -206,7 +209,7 @@ before writing anything:
   secrets did not reach the server: check the secret names and restart the
   connector again. Do not pair or create a wallet until this check passes.
 - Run every CLI command with the folder set explicitly:
-  `TWAK_HOME=/workspace/.twak npx -y @trustwallet/cli@0.24.1 ...`.
+  `TWAK_HOME=/workspace/.twak npx -y @trustwallet/cli@0.24.2 ...`.
 
 Other notes:
 

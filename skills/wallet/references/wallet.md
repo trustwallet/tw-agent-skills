@@ -89,7 +89,7 @@ twak wallet disconnect
 
 - `--project-id <id>` — WalletConnect project ID override (default: Trust Wallet's project; also `WALLETCONNECT_PROJECT_ID` or `twak init --wc-project-id`). No configuration is needed.
 - `--chains <list>` — Comma-separated chains: chain keys, aliases or CAIP-2 IDs (default: all supported EVM chains); an unknown chain is rejected with `CHAIN_UNSUPPORTED`
-- `--timeout <seconds>` — Connection timeout (default: 300)
+- `--timeout <seconds>` — Connection timeout, a positive whole number (default: 300); anything else fails with `VALIDATION_ERROR`
 
 Session behaviour:
 
@@ -98,5 +98,6 @@ Session behaviour:
 - **`twak wallet disconnect`** revokes the stored session. `--json` output: `{ disconnected }` (`false` when there was no session). Accepts `--project-id <id>`.
 - **EVM chains only.** Non-EVM chains cannot be used through WalletConnect.
 - **Approvals.** Trust Wallet does not send a push notification for signing requests: the user must open the app to see and approve them. Requests expire after about 5 minutes.
+- **Pairing outcome.** `connect` fails as soon as the pairing ends without a connection: `USER_REJECTED` (declined in the wallet), `WC_PAIRING_EXPIRED` (not approved within 5 minutes) or `WC_PAIRING_FAILED`; `WC_NOT_CONNECTED` when `--timeout` passes first.
 - **Rejections.** A request declined in the wallet fails with `errorCode: "USER_REJECTED"`; other wallet-side failures with `WC_REQUEST_FAILED`. Do not retry a rejected request without asking the user.
 - **"Not verified".** The wallet shows the connection (`TWAK`, `portal.trustwallet.com`) as not verified. This is expected: WalletConnect only verifies browser-based apps.
