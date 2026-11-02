@@ -80,7 +80,7 @@ Error: `{ error, errorCode }` on stdout, exit code 1.
 
 - `VALIDATION_ERROR` — bad/missing amount, both `<amount>` and `--usd` given, non-positive `--slippage` or `--usd`
 - `SLIPPAGE_EXCEEDED` — `--slippage` above 50
-- `CHAIN_UNSUPPORTED` — unknown chain key or unknown coin ID in an asset-ID token
+- `CHAIN_UNSUPPORTED` — unknown chain or unknown coin ID in an asset-ID token, a testnet chain, or a source chain twak cannot sign swaps for (only EVM chains and Solana; `--quote-only` still quotes any route)
 - `TOKEN_NOT_FOUND` — token symbol not resolvable on the chain
 - `NETWORK_ERROR` — price fetch failed for `--usd`
 - `NO_ROUTES` — no swap routes found for the pair
@@ -95,7 +95,7 @@ ERC-20 approvals are handled automatically during execution — no separate appr
 
 ## Chain Key vs Chain ID
 
-Always use the **map key** for `--chain` arguments (e.g., `bsc`, `ethereum`, `base`). BSC uses `chain.id = smartchain` internally — the CLI handles this automatically. Run `twak chains` for valid keys.
+Prefer chain keys for `--chain` arguments (e.g., `bsc`, `ethereum`, `base`); aliases, CAIP-2 IDs (`eip155:56`) and EVM chain IDs (`56`) are accepted too. Outputs always name the chain by its key. Run `twak chains` for valid keys.
 
 ## Supported Chains
 

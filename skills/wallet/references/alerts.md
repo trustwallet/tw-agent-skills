@@ -1,7 +1,7 @@
 
 # Price Alerts
 
-Set up price alerts that trigger when tokens reach target prices. Alerts are stored locally in `~/.twak/alerts.json` and checked on demand or by the watcher.
+Set up price alerts that trigger when tokens reach target prices. Alerts are stored locally in `alerts.json` in the twak folder and checked on demand or by the watcher.
 
 Alerts are **one-shot**: when an alert triggers (via `alert check` or `twak watch`), it is deactivated — `active` becomes `false` and `triggeredAt` is set. It is not deleted.
 
@@ -27,7 +27,7 @@ twak alert list --json
 twak alert list --active --json
 ```
 
-Output: array of alert records, each enriched with `tokenLabel` (resolved symbol) and `chainLabel` (chain key). `active: false` means the alert already triggered.
+Output: array of alert records (`chainKey` is the alert's chain), each enriched with `tokenLabel` (resolved symbol). `active: false` means the alert already triggered. A stored alert whose chain is no longer supported is left out and reported as a warning on stderr; it stays in the file until deleted.
 
 ## Check Alerts
 

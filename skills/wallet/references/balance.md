@@ -64,7 +64,7 @@ twak balance --address <addr> --chain ethereum --token 0xA0b86991c6218b36c1d19D4
 
 Output: `{ address, chain, symbol, token?, available, staked?, total, totalUsd, raw }`
 
-- `chain` — the chain's internal id, which can differ from the chain key (e.g. `smartchain` for BSC)
+- `chain` — the chain key (e.g. `bsc`)
 - `token` — present only when `--token` was passed
 - `staked` — omitted when zero; `totalUsd` — number or `null`
 

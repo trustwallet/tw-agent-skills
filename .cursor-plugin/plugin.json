@@ -1,0 +1,16 @@
+{
+  "name": "trust-wallet",
+  "displayName": "Trust Wallet",
+  "version": "0.1.0",
+  "description": "Check balances, send, swap, and buy or sell crypto with Trust Wallet. Supports both agent-owned keys and keyless mode with WalletConnect pairing.",
+  "author": {
+    "name": "Trust Wallet",
+    "email": "developer@trustwallet.com"
+  },
+  "homepage": "https://github.com/trustwallet/tw-agent-skills",
+  "repository": "https://github.com/trustwallet/tw-agent-skills",
+  "license": "MIT",
+  "keywords": ["trust-wallet", "wallet", "crypto", "walletconnect", "swap", "onramp"],
+  "skills": "./skills/",
+  "mcpServers": "./mcp.json"
+}
