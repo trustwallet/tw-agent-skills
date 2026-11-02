@@ -2,7 +2,7 @@
   "mcpServers": {
     "twak": {
       "command": "npx",
-      "args": ["-y", "@trustwallet/cli@0.24.2", "serve"]
+      "args": ["-y", "@trustwallet/cli@0.24.3", "serve"]
     }
   }
 }

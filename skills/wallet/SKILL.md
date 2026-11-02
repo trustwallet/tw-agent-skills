@@ -7,7 +7,7 @@ description: Trust Wallet CLI (`twak`) — install, create wallets, check balanc
 
 Command-line interface for multichain crypto wallet operations. Install with `npm install -g @trustwallet/cli`.
 
-If the Trust Wallet plugin's `twak` MCP server is running (see the `trust-wallet-mcp` skill), do not install the CLI or run `twak setup`: run commands with the same version as that server, `npx -y @trustwallet/cli@0.24.2 <command>`, and the same `TWAK_HOME`, since both use the same files.
+If the Trust Wallet plugin's `twak` MCP server is running (see the `trust-wallet-mcp` skill), do not install the CLI or run `twak setup`: run commands with the same version as that server, `npx -y @trustwallet/cli@0.24.3 <command>`, and the same `TWAK_HOME`, since both use the same files.
 
 ## Quick Start
 
