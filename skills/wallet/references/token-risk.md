@@ -22,7 +22,7 @@ twak risk c60_t0x6982508145454Ce325dDbE47a25d4ec3d2311933 --json  # PEPE
 
 Unknown assetId → `errorCode: TOKEN_NOT_FOUND`.
 
-`twak risk` calls `GET /v2/coinstatus/{assetId}` on `https://tws.trustwallet.com`. HTTP 401 and 403 come back as `NETWORK_ERROR`, and the message says to check the API key. A working `twak price` does not send that key.
+`twak risk` calls `GET /v2/coinstatus/{assetId}` on `https://tws.trustwallet.com`. HTTP 401 and 403 come back as `NETWORK_ERROR`, and the message says to check the API key. A working `twak price` does not send that key on its own request. With no stored key, `price` and `risk` both exit `CREDENTIALS_MISSING`.
 
 ## Address Validation
 

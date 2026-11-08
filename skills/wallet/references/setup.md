@@ -41,7 +41,7 @@ Set `TWAK_NONINTERACTIVE=1` or `NO_PROMPT=1` to force non-interactive mode (also
 twak auth status --json
 ```
 
-If `configured: true`, the key is stored. Skip to **Create a Wallet** only when you do not need a gateway call. `configured` does not mean `https://tws.trustwallet.com` accepted the key. `twak price` without `--history` never sends it. Gateway commands (`trending`, `search`, `risk`, balances, swap quotes, and `price --history`) can still return `NETWORK_ERROR` on HTTP 401 or 403. See `references/market.md`.
+If `configured: true`, the key is stored. That is not the same as `https://tws.trustwallet.com` accepting it. `twak price` without `--history` still requires the stored key, then posts to `https://market.trustwallet.com` without attaching it. Gateway commands (`trending`, `search`, `risk`, balances, swap quotes, and `price --history`) can return `NETWORK_ERROR` on HTTP 401 or 403 while that price succeeds. With no stored key those commands, including `price`, exit `CREDENTIALS_MISSING`. See `references/market.md`.
 
 ### Step 2: Check environment variables
 
