@@ -82,7 +82,7 @@ Error: `{ error, errorCode }` on stdout, exit code 1.
 - `SLIPPAGE_EXCEEDED` — `--slippage` above 50
 - `CHAIN_UNSUPPORTED` — unknown chain or unknown coin ID in an asset-ID token, a testnet chain, or a source chain twak cannot sign swaps for (only EVM chains and Solana; `--quote-only` still quotes any route)
 - `TOKEN_NOT_FOUND` — token symbol not resolvable on the chain
-- `NETWORK_ERROR` — price fetch failed for `--usd`
+- `NETWORK_ERROR` — price fetch failed for `--usd`, or the quote call to `https://tws.trustwallet.com` returned HTTP 401 or 403. The 401/403 message says to check the API key. A working `twak price` does not send that key on its own request, so it does not show the quote will succeed. With no stored key, `price` and the quote both exit `CREDENTIALS_MISSING`.
 - `NO_ROUTES` — no swap routes found for the pair
 - `INSUFFICIENT_BALANCE` — on-chain execution failed for insufficient funds
 - `TX_FAILED` — transaction failed on-chain or was not confirmed in time
