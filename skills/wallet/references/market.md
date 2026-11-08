@@ -5,6 +5,8 @@ Query token prices, trending tokens by category, and featured DApps. All command
 
 On error, all commands emit `{ error, errorCode }` on stdout (with `--json`) and exit with code 1.
 
+`twak price` without `--history` posts to `https://market.trustwallet.com` and does not send the portal key. A price that comes back does not mean `https://tws.trustwallet.com` accepted that key. `price --history`, `trending`, and `search` call the gateway. HTTP 401 and 403 from the gateway come back as `errorCode: "NETWORK_ERROR"`, and the message says to check the API key at https://portal.trustwallet.com. `dapps` reads DeFi Llama and does not use either host. `auth status` reporting `configured` only means the key is stored.
+
 ## Token Price
 
 ```bash
@@ -26,6 +28,8 @@ twak price BNB --history month --json    # hour, day, week, month, year, all
 ```
 
 Adds a `history` array of `{ price, date }` to the output: `{ token, chain, priceUsd, history }`.
+
+`--history` reads `GET /v1/market/charts/{assetId}` on `https://tws.trustwallet.com` and does send the portal key. It can return `NETWORK_ERROR` when a plain `twak price` succeeds.
 
 ### Batch Prices
 

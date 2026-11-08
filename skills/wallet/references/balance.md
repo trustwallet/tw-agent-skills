@@ -5,6 +5,8 @@ Query native balances, token holdings, and full portfolio with USD values across
 
 On error, all commands emit `{ error, errorCode }` on stdout (with `--json`) and exit with code 1.
 
+Balance lookups call `https://tws.trustwallet.com`. A thrown error that is not already a balance error, including HTTP 403, is replaced with `NETWORK_ERROR`. `twak wallet balance` and `twak wallet portfolio` say `Could not fetch balances. Please try again later.` `twak balance` says `Could not fetch balance. Please try again later.` Neither message includes the status code. A working `twak price` does not call this host.
+
 ## Prerequisites
 
 - Authenticated (`twak auth status`)

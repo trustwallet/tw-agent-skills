@@ -41,7 +41,7 @@ Set `TWAK_NONINTERACTIVE=1` or `NO_PROMPT=1` to force non-interactive mode (also
 twak auth status --json
 ```
 
-If `configured: true`, authentication is already set up — skip to **Create a Wallet**.
+If `configured: true`, the key is stored. Skip to **Create a Wallet** only when you do not need a gateway call. `configured` does not mean `https://tws.trustwallet.com` accepted the key. `twak price` without `--history` never sends it. Gateway commands (`trending`, `search`, `risk`, balances, swap quotes, and `price --history`) can still return `NETWORK_ERROR` on HTTP 401 or 403. See `references/market.md`.
 
 ### Step 2: Check environment variables
 
