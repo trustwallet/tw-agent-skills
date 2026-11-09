@@ -1,7 +1,7 @@
 {
   "name": "trust-wallet",
   "displayName": "Trust Wallet",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Check balances, send, swap, and buy or sell crypto with Trust Wallet. Supports both agent-owned keys and keyless mode with WalletConnect pairing.",
   "author": {
     "name": "Trust Wallet",
