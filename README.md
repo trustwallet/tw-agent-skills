@@ -54,7 +54,7 @@ TWAK_HMAC_SECRET=your_hmac_secret
 | Skill | Description | References |
 |-------|-------------|------------|
 | [`api`](skills/api/SKILL.md) | Trust Wallet REST API — token search, prices, swap quotes, market data, security | setup, token-info, swap-quote, market-data, security |
-| [`wallet`](skills/wallet/SKILL.md) | `twak` CLI — wallets, balances, swaps, transfers, alerts, ERC-20, x402 | setup, wallet, balance, send, swap, market, history, alerts, erc20, token-risk, x402 |
+| [`wallet`](skills/wallet/SKILL.md) | `twak` CLI — wallets, balances, swaps, transfers, alerts, ERC-20, x402 | setup, wallet, balance, send, swap, market, history, alerts, erc20, token-risk, x402, onramp, automations, compete, erc8004, erc8183 |
 | [`sdk`](skills/sdk/SKILL.md) | Open-source libraries — Wallet Core, Web3 Provider, deep links, assets, Barz | wallet-core, trust-web3-provider, trust-developer, assets, barz |
 | [`mcp`](skills/mcp/SKILL.md) | `twak` MCP server (plugin, Grok Bot) — setup, Trust Wallet app via WalletConnect or agent wallet, balances, send, swap, buy/sell | — |
 

@@ -14,7 +14,7 @@ This is the foundation skill. Every other Trust Wallet API skill depends on it f
 
 ## Asset ID Format
 
-- **Native coin**: `c{coinId}` — e.g., `c60` (ETH), `c714` (BNB), `c501` (SOL)
+- **Native coin**: `c{coinId}` — e.g., `c60` (ETH), `c20000714` (BNB Smart Chain), `c501` (SOL). `c714` is BNB Beacon Chain (BEP-2), not BSC.
 - **Token**: `c{coinId}_t{contractAddress}` — e.g., `c60_t0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48` (USDC on Ethereum)
 
 The `coinId` follows the SLIP-44 standard.
@@ -24,13 +24,13 @@ The `coinId` follows the SLIP-44 standard.
 | Chain | Coin ID | Symbol |
 |-------|---------|--------|
 | Ethereum | 60 | ETH |
-| BNB Smart Chain | 714 | BNB |
+| BNB Smart Chain | 20000714 | BNB |
 | Solana | 501 | SOL |
 | Bitcoin | 0 | BTC |
 | Polygon | 966 | MATIC |
 | Arbitrum | 10042221 | ETH |
 | Optimism | 10000070 | ETH |
-| Base | 10008453 | ETH |
+| Base | 8453 | ETH |
 | Tron | 195 | TRX |
 | Avalanche | 10009000 | AVAX |
 
