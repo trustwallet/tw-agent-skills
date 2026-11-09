@@ -14,6 +14,8 @@ Register at [portal.trustwallet.com](https://portal.trustwallet.com) to obtain:
 |----------|------|---------|
 | `https://tws.trustwallet.com` | HMAC-SHA256 | Token prices, security, swap quotes, market listings, assets |
 
+`twak price` without `--history` does not call this host. After a key is stored it posts to `https://market.trustwallet.com` and does not send these headers. Listings, search, risk, swap quotes, balances, and `price --history` do use this host. See `skills/wallet/references/market.md`.
+
 ## Rate Limits
 
 The free tier is limited to **1 request per second** across all authenticated endpoints. Exceeding this returns `429 Too Many Requests`. Space sequential API calls at least 1 second apart.
@@ -145,10 +147,10 @@ def sign_request(method, path, query, access_id, hmac_secret):
 
 Trust Wallet uses a compact asset ID across all APIs:
 
-- **Native coin**: `c{coinId}` — e.g., `c60` (ETH), `c714` (BNB), `c501` (SOL)
+- **Native coin**: `c{coinId}` — e.g., `c60` (ETH), `c20000714` (BNB Smart Chain), `c501` (SOL). `c714` is BNB Beacon Chain (BEP-2), not BSC.
 - **Token**: `c{coinId}_t{contractAddress}` — e.g., `c60_t0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48` (USDC on Ethereum)
 
-The `coinId` follows the [SLIP-44](https://github.com/satoshilabs/slips/blob/master/slip-0044.md) standard.
+Many coin ids follow [SLIP-44](https://github.com/satoshilabs/slips/blob/master/slip-0044.md). BNB Smart Chain does not: its Trust Wallet coin id is `20000714`. SLIP-44 `714` is BNB Beacon Chain (BEP-2).
 
 ## Supported Chains
 
@@ -159,25 +161,25 @@ Trust Wallet supports 100+ chains. Below is the list grouped by type. Chains mar
 | Chain | Coin ID | Symbol | Chain ID |
 |-------|---------|--------|----------|
 | Ethereum | 60 | ETH | 1 |
-| BNB Smart Chain (BSC) | 714 | BNB | 56 |
+| BNB Smart Chain (BSC) | 20000714 | BNB | 56 |
 | Polygon | 966 | MATIC | 137 |
 | Avalanche C-Chain | 10009000 | AVAX | 43114 |
 | Arbitrum | 10042221 | ETH | 42161 |
 | Optimism | 10000070 | ETH | 10 |
-| Base | 10008453 | ETH | 8453 |
+| Base | 8453 | ETH | 8453 |
 | Fantom | 10000250 | FTM | 250 |
-| Sonic | — | S | — |
-| Linea | — | ETH | 59144 |
-| zkSync Era | — | ETH | 324 |
-| Scroll | — | ETH | 534352 |
-| Blast | — | ETH | 81457 |
+| Sonic | 10000146 | S | 146 |
+| Linea | 59144 | ETH | 59144 |
+| zkSync Era | 10000324 | ETH | 324 |
+| Scroll | 534352 | ETH | 534352 |
+| Blast | 81457 | ETH | 81457 |
 | Manta Pacific | — | ETH | 169 |
 | Mantle | — | MNT | 5000 |
 | Polygon zkEVM | — | ETH | 1101 |
 | Cronos | — | CRO | 25 |
 | Gnosis (xDai) | — | xDAI | 100 |
-| Celo | — | CELO | 42220 |
-| Aurora | — | ETH | 1313161554 |
+| Celo | 52752 | CELO | 42220 |
+| Aurora | 1323161554 | ETH | 1313161554 |
 | Moonbeam | — | GLMR | 1284 |
 | Moonriver | — | MOVR | 1285 |
 | Boba | — | ETH | 288 |

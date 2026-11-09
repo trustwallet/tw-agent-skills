@@ -160,3 +160,7 @@ Example entry:
 ### BSC Testnet
 
 `bsctestnet` (BSC testnet, chain ID 97) is a special chain key that is **not** listed by `twak chains`. It is enabled only for ERC-20 transfer/approve/balance and ERC-8004 / ERC-8183 contract calls — not swaps, portfolio, market data, or onramp. Pass it via `--chain bsctestnet`. See `references/send.md` and `references/erc20.md` for usage.
+
+## twak serve
+
+With no stored key, `twak serve` prints `CREDENTIALS_MISSING` and does not register chains. After a key is stored, startup calls `BlockchainService.setNode` for `bsctestnet`. If that write fails, stderr shows `twak: could not register testnet node for smartchain-testnet: ...` and startup continues with the server marked initialized. That line is not a failed server.
