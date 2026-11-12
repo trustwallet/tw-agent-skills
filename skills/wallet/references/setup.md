@@ -9,7 +9,7 @@ Install and configure the Trust Wallet Agent Kit CLI for multichain crypto opera
 npm install -g @trustwallet/cli
 ```
 
-Under the Trust Wallet plugin, whose MCP server pins a version, skip the install and use `npx -y @trustwallet/cli@0.24.3` instead of `twak`, with the server's `TWAK_HOME` (see the `trust-wallet-mcp` skill).
+Under the Trust Wallet plugin, whose MCP server pins a version range, skip the install and use `npx -y @trustwallet/cli@0.26` instead of `twak`, with the server's `TWAK_HOME` (see the `trust-wallet-mcp` skill).
 
 Verify installation:
 

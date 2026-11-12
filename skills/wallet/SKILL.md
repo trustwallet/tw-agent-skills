@@ -7,7 +7,7 @@ description: Trust Wallet CLI (`twak`) — install, create wallets, check balanc
 
 Command-line interface for multichain crypto wallet operations. Install with `npm install -g @trustwallet/cli`.
 
-If the Trust Wallet plugin's `twak` MCP server is running (see the `trust-wallet-mcp` skill), do not install the CLI or run `twak setup`: run commands with the same version as that server, `npx -y @trustwallet/cli@0.24.3 <command>`, and the same `TWAK_HOME`, since both use the same files.
+If the Trust Wallet plugin's `twak` MCP server is running (see the `trust-wallet-mcp` skill), do not install the CLI or run `twak setup`: run commands with the same version as that server, `npx -y @trustwallet/cli@0.26 <command>`, and the same `TWAK_HOME`, since both use the same files.
 
 ## Quick Start
 
@@ -52,3 +52,4 @@ Read `references/setup.md` alongside any other reference if the CLI isn't instal
 - `--wc-project-id <id>` — WalletConnect project ID override (default: Trust Wallet's project; or set `WALLETCONNECT_PROJECT_ID`). A stored WalletConnect session (see `references/wallet.md`) is resumed at startup.
 - `--watch` — background watcher that fires DCA/limit automations; requires the local agent wallet (see `references/automations.md`)
 - `--watch-interval <duration>` — automation poll interval when `--watch` is set, e.g. `30s`, `5m`, `1h` (default 60s, min 5s)
+- `--read-only` — serve only tools that read (prices, quotes, balances, history, addresses), over MCP or REST. Tools that sign or change state are neither listed nor callable: calling one returns `READ_ONLY` (REST: 403). The wallet is fixed at startup (a resumed WalletConnect session, otherwise the local agent wallet), since `switch_wallet_mode` is not served. Cannot be combined with `--watch`.

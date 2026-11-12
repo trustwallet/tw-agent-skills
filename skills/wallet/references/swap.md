@@ -47,7 +47,7 @@ twak swap 0.01 ETH BNB --chain ethereum --to-chain bsc --json
 - `--chain <key>` — Source chain (default: ethereum)
 - `--to-chain <key>` — Destination chain for cross-chain swaps
 - `--slippage <pct>` — Slippage tolerance % (default: 1). Must be a positive number (`VALIDATION_ERROR` otherwise); values above 50 are rejected with `SLIPPAGE_EXCEEDED`; values above 5 emit a stderr warning but proceed
-- `--decimals <n>` — Source token decimals (overrides auto-resolution for tokens not in the registry)
+- `--decimals <n>` — Source token decimals, only for a token twak does not know (registry, then Trust token search); rejected with `VALIDATION_ERROR` if it contradicts them
 - `--usd <amount>` — Swap a USD-equivalent amount of the source token (e.g. `twak swap ETH USDC --usd 100`); fails with `NETWORK_ERROR` if the token price can't be fetched
 - `--quote-only` — Get quote without executing
 - `--password <pw>` — Wallet password (resolution order: `--password` → `TWAK_WALLET_PASSWORD` → OS keychain)
