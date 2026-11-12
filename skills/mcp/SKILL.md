@@ -14,14 +14,15 @@ The `twak` MCP server (started by this plugin; some hosts show it as
 `check_token_risk`, `get_transaction_history` and more. The tools are listed
 even before setup.
 
-When you run the CLI yourself, use the same version as the server:
-`npx -y @trustwallet/cli@0.26.0 <command> --json`. Do not install another
+When you run the CLI yourself, use the same version range as the server,
+`0.26` (the latest `0.26.x`):
+`npx -y @trustwallet/cli@0.26 <command> --json`. Do not install another
 version, and do not run `twak setup`: it registers a second `twak` server
 next to this one, and the two would share the same WalletConnect session.
 
 If the `twak` tools are missing, the server did not start: it needs Node.js
 and `npx` on this computer. Tell the user, and check that
-`npx -y @trustwallet/cli@0.26.0 --version` prints `0.26.0`.
+`npx -y @trustwallet/cli@0.26 --version` prints a `0.26.x` version.
 
 **On Grok Bot, read [On Grok Bot](#on-grok-bot) first**: setup differs there.
 
@@ -42,7 +43,7 @@ Call `get_wallet_status`.
   https://portal.trustwallet.com/dashboard/apps (an access ID and an HMAC
   secret). Have the user set `TWAK_ACCESS_ID` and `TWAK_HMAC_SECRET` in your
   environment, never pasting them in chat, then run
-  `TWAK_HOME=<twakHome> npx -y @trustwallet/cli@0.26.0 init --json` with the
+  `TWAK_HOME=<twakHome> npx -y @trustwallet/cli@0.26 init --json` with the
   `twakHome` the server reported (expected: `{ "configured": true, ... }`).
   The tools work as soon as the credentials are saved in that folder, with
   no restart.
@@ -121,7 +122,7 @@ Then:
    number; tell the user these rules before they choose it. Ask them to
    write it down: restoring a backup of the wallet needs it.
 2. Create the wallet:
-   `TWAK_HOME=<twakHome> npx -y @trustwallet/cli@0.26.0 wallet create --no-keychain --json`,
+   `TWAK_HOME=<twakHome> npx -y @trustwallet/cli@0.26 wallet create --no-keychain --json`,
    with the `twakHome` the server reported. The output lists
    `{ address, chain }` per chain. `CREDENTIALS_MISSING` or "No wallet
    password" here means your shell does not have the credentials or
@@ -213,7 +214,7 @@ before writing anything:
   secrets did not reach the server: check the secret names and restart the
   connector again. Do not pair or create a wallet until this check passes.
 - Run every CLI command with the folder set explicitly:
-  `TWAK_HOME=/workspace/.twak npx -y @trustwallet/cli@0.26.0 ...`.
+  `TWAK_HOME=/workspace/.twak npx -y @trustwallet/cli@0.26 ...`.
 
 Other notes:
 
