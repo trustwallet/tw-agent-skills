@@ -89,14 +89,14 @@ Decimals are resolved by twak, not passed in: known-token registry → Trust tok
 - `--chain <key>` — Chain key (e.g. `base`, `ethereum`, `bsctestnet`). When set, `--token` is a token contract address. See **Selecting the chain & token** above.
 - `--decimals <n>` — Token decimals (non-negative integer), only for a token twak does not know; rejected if it contradicts the registry or token search
 - `--confirm-to <address>` — Pin the expected resolved address. Rejected with `ENS_MISMATCH` only when name resolution changed the address and the result differs from the pin.
-- `--max-usd <n>` — Maximum allowed transfer value in USD (default: 10000). Exceeding it fails with `USD_LIMIT_EXCEEDED`.
-- `--skip-safety-check` — Bypass the USD value safety check
+- `--max-usd <n>` — USD limit for this command only (default: `TWAK_MAX_USD`, then `twak config set max-usd`, then 10000). Never pass it unless the user asks.
+- `--skip-safety-check` — Skip the USD limit for this command. Never pass it unless the user asks.
 - `--password <pw>` — Wallet password (falls back to `TWAK_WALLET_PASSWORD` env var, then OS keychain)
 - `--json` — Output as JSON
 
-## USD Safety Check
+## USD limit
 
-Unless `--skip-safety-check` is set, the transfer's USD value is estimated from a price lookup. If it exceeds `--max-usd`, the transfer fails with `USD_LIMIT_EXCEEDED`. If the price lookup fails or returns 0, the check is **silently skipped** (a warning goes to stderr only) and the transfer proceeds — do not rely on `--max-usd` as a hard gate for tokens without price data. Values over $1000 print a high-value warning to stderr.
+Every transfer is valued in USD on the exact amount signed and refused above the user's limit (default $10,000) with `USD_LIMIT_EXCEEDED`. A transfer twak cannot value (no price, or `--decimals` supplied) is refused with `USD_VALUE_UNVERIFIED` unless the user allows it; a failed price lookup is a retryable `NETWORK_ERROR`. Values over $1,000 print a high-value warning to stderr. See `references/limits.md` for the settings and what an agent may do.
 
 ## Errors
 

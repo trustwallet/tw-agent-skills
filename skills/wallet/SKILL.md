@@ -7,7 +7,7 @@ description: Trust Wallet CLI (`twak`) — install, create wallets, check balanc
 
 Command-line interface for multichain crypto wallet operations. Install with `npm install -g @trustwallet/cli`.
 
-If the Trust Wallet plugin's `twak` MCP server is running (see the `trust-wallet-mcp` skill), do not install the CLI or run `twak setup`: run commands with the same version as that server, `npx -y @trustwallet/cli@0.26 <command>`, and the same `TWAK_HOME`, since both use the same files.
+If the Trust Wallet plugin's `twak` MCP server is running (see the `trust-wallet-mcp` skill), do not install the CLI or run `twak setup`: run commands with the same version as that server, `npx -y @trustwallet/cli@1 <command>`, and the same `TWAK_HOME`, since both use the same files.
 
 ## Quick Start
 
@@ -24,6 +24,7 @@ Read the reference that matches the user's task:
 | Create wallet, keychain, sign, register | `references/wallet.md` | "create wallet", "keychain", "sign message", "wallet status", "register wallet with backend" |
 | Balance, holdings, portfolio | `references/balance.md` | "check balance", "portfolio", "token holdings" |
 | Send tokens, ENS transfers | `references/send.md` | "send ETH", "transfer to", "vitalik.eth" |
+| USD limit, maximum slippage, `twak config` | `references/limits.md` | `USD_LIMIT_EXCEEDED`, `USD_VALUE_UNVERIFIED`, `SLIPPAGE_EXCEEDED`, "raise the limit", "max slippage", "twak config" |
 | Swap tokens, cross-chain | `references/swap.md` | "swap ETH for USDC", "bridge", "cross-chain swap" |
 | Buy/sell crypto with fiat | `references/onramp.md` | "buy ETH with USD", "onramp", "offramp", "fiat", "sell crypto for cash" |
 | Prices, trending, DApps | `references/market.md` | "price of", "trending tokens", "dapps" |

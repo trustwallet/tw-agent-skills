@@ -15,14 +15,14 @@ The `twak` MCP server (started by this plugin; some hosts show it as
 even before setup.
 
 When you run the CLI yourself, use the same version range as the server,
-`0.26` (the latest `0.26.x`):
-`npx -y @trustwallet/cli@0.26 <command> --json`. Do not install another
+`1` (the latest `1.x`):
+`npx -y @trustwallet/cli@1 <command> --json`. Do not install another
 version, and do not run `twak setup`: it registers a second `twak` server
 next to this one, and the two would share the same WalletConnect session.
 
 If the `twak` tools are missing, the server did not start: it needs Node.js
 and `npx` on this computer. Tell the user, and check that
-`npx -y @trustwallet/cli@0.26 --version` prints a `0.26.x` version.
+`npx -y @trustwallet/cli@1 --version` prints a `1.x` version.
 
 **On Grok Bot, read [On Grok Bot](#on-grok-bot) first**: setup differs there.
 
@@ -43,7 +43,7 @@ Call `get_wallet_status`.
   https://portal.trustwallet.com/dashboard/apps (an access ID and an HMAC
   secret). Have the user set `TWAK_ACCESS_ID` and `TWAK_HMAC_SECRET` in your
   environment, never pasting them in chat, then run
-  `TWAK_HOME=<twakHome> npx -y @trustwallet/cli@0.26 init --json` with the
+  `TWAK_HOME=<twakHome> npx -y @trustwallet/cli@1 init --json` with the
   `twakHome` the server reported (expected: `{ "configured": true, ... }`).
   The tools work as soon as the credentials are saved in that folder, with
   no restart.
@@ -122,7 +122,7 @@ Then:
    number; tell the user these rules before they choose it. Ask them to
    write it down: restoring a backup of the wallet needs it.
 2. Create the wallet:
-   `TWAK_HOME=<twakHome> npx -y @trustwallet/cli@0.26 wallet create --no-keychain --json`,
+   `TWAK_HOME=<twakHome> npx -y @trustwallet/cli@1 wallet create --no-keychain --json`,
    with the `twakHome` the server reported. The output lists
    `{ address, chain }` per chain. `CREDENTIALS_MISSING` or "No wallet
    password" here means your shell does not have the credentials or
@@ -165,6 +165,39 @@ the app, and present the new pairing as expected.
   every `chain` field in results uses the same keys.
 - Swaps start only on EVM chains and Solana (`CHAIN_UNSUPPORTED` otherwise);
   they can end on other chains.
+
+### Limits
+
+twak refuses some transactions to protect the user. The limits are the
+user's settings; no tool changes them, and you never change them on your own.
+
+- `USD_LIMIT_EXCEEDED`: a transfer, swap, off-ramp payout or x402 payment is
+  worth more than the user's USD limit per transaction ($10,000 by default).
+- `USD_VALUE_UNVERIFIED`: twak cannot value it (no USD price, a token it does
+  not know, `decimals` you supplied, any testnet token). Refused unless the
+  user allows such transactions.
+- `SLIPPAGE_EXCEEDED`: a swap's slippage is above the user's maximum (10% by
+  default, at most 50%). Keep the default 1% unless the user asks for more.
+- `NETWORK_ERROR` from a price or token lookup: retry later. Never a reason
+  to change a setting.
+
+When something is refused, tell the user what and why, and that they can
+change the limit if they want to. Change it only when they explicitly ask,
+with the CLI (same version and twak folder as the server; it applies to the
+running server without a restart):
+
+```bash
+TWAK_HOME=<twakHome> npx -y @trustwallet/cli@1 config set max-usd 50000 --json
+TWAK_HOME=<twakHome> npx -y @trustwallet/cli@1 config set max-slippage 20 --json
+TWAK_HOME=<twakHome> npx -y @trustwallet/cli@1 config set allow-unverified-value true --json
+TWAK_HOME=<twakHome> npx -y @trustwallet/cli@1 config unset max-usd --json
+```
+
+Then repeat the new value back to the user from the command's output, and
+say it applies to every later transaction until they change it. Do not set
+`TWAK_MAX_USD` / `TWAK_MAX_SLIPPAGE`, or pass `--max-usd` /
+`--skip-safety-check`, unless they ask for that. Details:
+`skills/wallet/references/limits.md`.
 
 Before every send, swap, approval or off-ramp transfer, state exactly what
 will be sent, to whom, on which chain, and get the user's go-ahead. In
@@ -214,7 +247,7 @@ before writing anything:
   secrets did not reach the server: check the secret names and restart the
   connector again. Do not pair or create a wallet until this check passes.
 - Run every CLI command with the folder set explicitly:
-  `TWAK_HOME=/workspace/.twak npx -y @trustwallet/cli@0.26 ...`.
+  `TWAK_HOME=/workspace/.twak npx -y @trustwallet/cli@1 ...`.
 
 Other notes:
 
