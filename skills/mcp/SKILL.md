@@ -216,6 +216,14 @@ it again and wait for a new go-ahead. In WalletConnect mode, also:
   expires after about 5 minutes.
 - `USER_REJECTED` means the user declined it in the app. Do not retry; ask
   them what to do.
+- If the call itself times out on your side (your host's limit on a tool
+  call, often shorter than those 5 minutes), the request was **not**
+  cancelled: it stays in the app, and approving it still sends the
+  transaction, since the wallet broadcasts it. Do not retry right away. Tell
+  the user, ask them to reject the pending request in the app (or to tell you
+  if they approved it), then check `get_transaction_history` and balances
+  before proposing a retry. A swap can send a token approval and then the
+  swap itself: check for both.
 - `WC_REQUEST_FAILED` means the wallet returned an error; report its message.
 - `WALLET_NOT_BOUND` means the connection ended: `get_wallet_status` shows
   why in `lastError`. Reconnect (section 2).
