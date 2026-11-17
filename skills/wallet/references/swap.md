@@ -65,14 +65,14 @@ Asset IDs are also accepted: `c{coinId}` for native coins (e.g. `c60` = ETH) and
 
 With `--json`, stdout carries **only** the JSON object — all status/progress messages (USD conversion, approval/swap tx links, high-slippage warning) go to stderr, so `twak swap … --json | jq` is safe.
 
-Quote (`--quote-only`): `{ input, output, minReceived?, provider, priceImpact, networkFee?, steps? }`
+Quote (`--quote-only`): `{ input, output, minReceived?, provider, priceImpact, networkFee?, steps }`
 
 - `input` / `output` — formatted strings with symbol, e.g. `"1.0 ETH"`, `"2543.21 USDC"`
 - `minReceived` — formatted string; omitted when the route has no min-amount-out
 - `provider` — provider names joined with `" → "` for multi-step routes, e.g. `"1inch"` or `"Stargate → 1inch"`
 - `priceImpact` — string
 - `networkFee` — formatted string, multiple step fees joined with `" + "` (e.g. `"0.001 ETH + 0.002 BNB"`); omitted when no step reports a fee
-- `steps` — number of route steps; only present for multi-step routes (> 1)
+- `steps` — number of route steps
 
 Execute success: same keys as the quote, plus `{ hash, fromChain, toChain, explorer }` — `hash` is the swap transaction hash, `explorer` is the block-explorer URL.
 

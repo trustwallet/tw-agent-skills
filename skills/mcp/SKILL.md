@@ -148,8 +148,13 @@ the app, and present the new pairing as expected.
 - **Balances**: `wallet_portfolio`, or `get_balance` / `get_token_holdings`
   with an address and chain (any address, without connecting).
 - **Receive**: `get_address` (or `list_addresses`) for the requested chain.
-- **Send**: `transfer`. **Swap**: `get_swap_quote` first, show the quote,
-  then `swap`. **Buy**: `get_onramp_quote` + `get_onramp_url`.
+- **Send**: `transfer`. **Buy**: `get_onramp_quote` + `get_onramp_url`.
+- **Swap**: call `get_swap_quote` with the `slippage` you will swap with
+  (default 1), and show the user `output` and `minReceived` (the least the
+  swap accepts at that slippage) before calling `swap` with the same
+  `slippage`. If the quote has a `warning` that the swap would be refused,
+  tell the user before proposing it. `swap` requests its own route, so after
+  it report the result's `output` and `minReceived`, not the quote's.
 - **Token decimals**: never pass `decimals` to `transfer` or
   `confirm_offramp_transfer` unless the call failed asking for them (a token
   twak does not know). twak resolves them itself and rejects a value that
@@ -178,6 +183,8 @@ user's settings; no tool changes them, and you never change them on your own.
   user allows such transactions.
 - `SLIPPAGE_EXCEEDED`: a swap's slippage is above the user's maximum (10% by
   default, at most 50%). Keep the default 1% unless the user asks for more.
+  A quote is not limited by the maximum; its `warning` tells you when the
+  swap would be refused.
 - `NETWORK_ERROR` from a price or token lookup: retry later. Never a reason
   to change a setting.
 
@@ -199,9 +206,10 @@ say it applies to every later transaction until they change it. Do not set
 `--skip-safety-check`, unless they ask for that. Details:
 `skills/wallet/references/limits.md`.
 
-Before every send, swap, approval or off-ramp transfer, state exactly what
-will be sent, to whom, on which chain, and get the user's go-ahead. In
-WalletConnect mode, also:
+Before every send, swap, approval or off-ramp transfer, check the balance,
+state exactly what will be sent, to whom, on which chain, and get the user's
+go-ahead. If the asset, amount, recipient or chain changes after that, state
+it again and wait for a new go-ahead. In WalletConnect mode, also:
 
 - Ask the user to **open the Trust Wallet app** to approve. No push
   notification is shown: the request appears only once the app is open. It

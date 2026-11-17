@@ -19,7 +19,7 @@ Transfers worth more than $1,000 print a high-value warning on stderr.
 A swap accepts any output down to `quote × (1 − slippage)`, so the slippage tolerance bounds what one swap can lose (sandwich bots take most of that margin). The default tolerance is 1%. A swap above the **maximum, 10% by default**, is refused with `SLIPPAGE_EXCEEDED`; the message gives the command to raise it. Volatile or fee-on-transfer tokens may need more, which only the user decides.
 
 - The maximum can be raised to at most 50%. Above 50% is always refused.
-- Quotes (`twak swap … --quote-only`, MCP `get_swap_quote`) sign nothing and are not limited by the maximum.
+- Quotes (`twak swap … --quote-only --slippage <pct>`, MCP `get_swap_quote` with `slippage`) sign nothing and are not limited by the maximum, only by the 50% limit. Their `minReceived` shows what that slippage allows; MCP `get_swap_quote` adds a `warning` when a swap at that slippage would be refused.
 - Above 5%, a swap carries a high-slippage warning.
 
 ## Settings: `twak config`
