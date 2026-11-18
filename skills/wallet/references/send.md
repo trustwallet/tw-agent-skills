@@ -74,7 +74,7 @@ Amounts are human-readable (not smallest unit):
 --amount 0.001     # 0.001 BTC
 ```
 
-Decimals resolution order: `--decimals` override → token-search result → known-token registry. If none yields a value, the transfer fails with `VALIDATION_ERROR` ("Could not determine decimals…") — pass `--decimals <n>` for tokens the search/registry doesn't know. Decimals are never silently defaulted to 18.
+Decimals are resolved by twak, not passed in: known-token registry → Trust token search → `--decimals`, the last only for a token neither knows (e.g. a testnet token, or one too new to be indexed). Omit `--decimals` otherwise: a value that contradicts the registry or search fails with `VALIDATION_ERROR` ("… has 6 decimals (from the token registry), but 18 was passed") instead of being used. If nothing yields a value, the transfer fails with `VALIDATION_ERROR` ("Could not determine decimals…") — then pass `--decimals <n>`. If the token search itself fails, the transfer fails with a retryable `NETWORK_ERROR`: retry rather than guessing decimals. Decimals are never silently defaulted to 18.
 
 ## Asset IDs
 
@@ -87,16 +87,16 @@ Decimals resolution order: `--decimals` override → token-search result → kno
 - `--amount <n>` — Amount in human-readable format (required)
 - `--token <assetIdOrAddress>` — Without `--chain`: the asset ID (e.g. `c60`, `c60_t0x…`) — required in this form. With `--chain`: a bare token contract address (`0x…`); omit it to send the native coin.
 - `--chain <key>` — Chain key (e.g. `base`, `ethereum`, `bsctestnet`). When set, `--token` is a token contract address. See **Selecting the chain & token** above.
-- `--decimals <n>` — Token decimals override (non-negative integer); use when auto-resolution fails for tokens not in the registry
+- `--decimals <n>` — Token decimals (non-negative integer), only for a token twak does not know; rejected if it contradicts the registry or token search
 - `--confirm-to <address>` — Pin the expected resolved address. Rejected with `ENS_MISMATCH` only when name resolution changed the address and the result differs from the pin.
-- `--max-usd <n>` — Maximum allowed transfer value in USD (default: 10000). Exceeding it fails with `USD_LIMIT_EXCEEDED`.
-- `--skip-safety-check` — Bypass the USD value safety check
+- `--max-usd <n>` — USD limit for this command only (default: `TWAK_MAX_USD`, then `twak config set max-usd`, then 10000). Never pass it unless the user asks.
+- `--skip-safety-check` — Skip the USD limit for this command. Never pass it unless the user asks.
 - `--password <pw>` — Wallet password (falls back to `TWAK_WALLET_PASSWORD` env var, then OS keychain)
 - `--json` — Output as JSON
 
-## USD Safety Check
+## USD limit
 
-Unless `--skip-safety-check` is set, the transfer's USD value is estimated from a price lookup. If it exceeds `--max-usd`, the transfer fails with `USD_LIMIT_EXCEEDED`. If the price lookup fails or returns 0, the check is **silently skipped** (a warning goes to stderr only) and the transfer proceeds — do not rely on `--max-usd` as a hard gate for tokens without price data. Values over $1000 print a high-value warning to stderr.
+Every transfer is valued in USD on the exact amount signed and refused above the user's limit (default $10,000) with `USD_LIMIT_EXCEEDED`. A transfer twak cannot value (no price, or `--decimals` supplied) is refused with `USD_VALUE_UNVERIFIED` unless the user allows it; a failed price lookup is a retryable `NETWORK_ERROR`. Values over $1,000 print a high-value warning to stderr. See `references/limits.md` for the settings and what an agent may do.
 
 ## Errors
 
@@ -104,7 +104,7 @@ With `--json`, errors emit a single `{ error, errorCode }` object to stdout and 
 
 | errorCode | Trigger |
 |---|---|
-| `VALIDATION_ERROR` | Asset ID combined with `--chain`; missing `--token` without `--chain`; malformed token ID; non-positive `--amount` or `--max-usd`; bad `--decimals`; decimals could not be determined |
+| `VALIDATION_ERROR` | Asset ID combined with `--chain`; missing `--token` without `--chain`; malformed token ID; non-positive `--amount` or `--max-usd`; bad `--decimals`; `--decimals` contradicting the token's known decimals; decimals could not be determined |
 | `CHAIN_UNSUPPORTED` | Unknown `--chain` key, or unsupported coin ID in the asset ID |
 | `ENS_NOT_FOUND` | Dotted `--to` name could not be resolved |
 | `ENS_MISMATCH` | Resolved address differs from `--confirm-to` pin |

@@ -14,14 +14,15 @@ The `twak` MCP server (started by this plugin; some hosts show it as
 `check_token_risk`, `get_transaction_history` and more. The tools are listed
 even before setup.
 
-When you run the CLI yourself, use the same version as the server:
-`npx -y @trustwallet/cli@0.24.3 <command> --json`. Do not install another
+When you run the CLI yourself, use the same version range as the server,
+`1` (the latest `1.x`):
+`npx -y @trustwallet/cli@1 <command> --json`. Do not install another
 version, and do not run `twak setup`: it registers a second `twak` server
 next to this one, and the two would share the same WalletConnect session.
 
 If the `twak` tools are missing, the server did not start: it needs Node.js
 and `npx` on this computer. Tell the user, and check that
-`npx -y @trustwallet/cli@0.24.3 --version` prints `0.24.3`.
+`npx -y @trustwallet/cli@1 --version` prints a `1.x` version.
 
 **On Grok Bot, read [On Grok Bot](#on-grok-bot) first**: setup differs there.
 
@@ -42,7 +43,7 @@ Call `get_wallet_status`.
   https://portal.trustwallet.com/dashboard/apps (an access ID and an HMAC
   secret). Have the user set `TWAK_ACCESS_ID` and `TWAK_HMAC_SECRET` in your
   environment, never pasting them in chat, then run
-  `TWAK_HOME=<twakHome> npx -y @trustwallet/cli@0.24.3 init --json` with the
+  `TWAK_HOME=<twakHome> npx -y @trustwallet/cli@1 init --json` with the
   `twakHome` the server reported (expected: `{ "configured": true, ... }`).
   The tools work as soon as the credentials are saved in that folder, with
   no restart.
@@ -121,7 +122,7 @@ Then:
    number; tell the user these rules before they choose it. Ask them to
    write it down: restoring a backup of the wallet needs it.
 2. Create the wallet:
-   `TWAK_HOME=<twakHome> npx -y @trustwallet/cli@0.24.3 wallet create --no-keychain --json`,
+   `TWAK_HOME=<twakHome> npx -y @trustwallet/cli@1 wallet create --no-keychain --json`,
    with the `twakHome` the server reported. The output lists
    `{ address, chain }` per chain. `CREDENTIALS_MISSING` or "No wallet
    password" here means your shell does not have the credentials or
@@ -147,8 +148,17 @@ the app, and present the new pairing as expected.
 - **Balances**: `wallet_portfolio`, or `get_balance` / `get_token_holdings`
   with an address and chain (any address, without connecting).
 - **Receive**: `get_address` (or `list_addresses`) for the requested chain.
-- **Send**: `transfer`. **Swap**: `get_swap_quote` first, show the quote,
-  then `swap`. **Buy**: `get_onramp_quote` + `get_onramp_url`.
+- **Send**: `transfer`. **Buy**: `get_onramp_quote` + `get_onramp_url`.
+- **Swap**: call `get_swap_quote` with the `slippage` you will swap with
+  (default 1), and show the user `output` and `minReceived` (the least the
+  swap accepts at that slippage) before calling `swap` with the same
+  `slippage`. If the quote has a `warning` that the swap would be refused,
+  tell the user before proposing it. `swap` requests its own route, so after
+  it report the result's `output` and `minReceived`, not the quote's.
+- **Token decimals**: never pass `decimals` to `transfer` or
+  `confirm_offramp_transfer` unless the call failed asking for them (a token
+  twak does not know). twak resolves them itself and rejects a value that
+  contradicts what it knows; do not guess one.
 - **Sell** (EVM chains only), three steps: `get_offramp_quote`, then
   `get_offramp_url` (the user completes the provider's checkout in the
   browser), then `confirm_offramp_transfer` to send the crypto to the
@@ -161,15 +171,59 @@ the app, and present the new pairing as expected.
 - Swaps start only on EVM chains and Solana (`CHAIN_UNSUPPORTED` otherwise);
   they can end on other chains.
 
-Before every send, swap, approval or off-ramp transfer, state exactly what
-will be sent, to whom, on which chain, and get the user's go-ahead. In
-WalletConnect mode, also:
+### Limits
+
+twak refuses some transactions to protect the user. The limits are the
+user's settings; no tool changes them, and you never change them on your own.
+
+- `USD_LIMIT_EXCEEDED`: a transfer, swap, off-ramp payout or x402 payment is
+  worth more than the user's USD limit per transaction ($10,000 by default).
+- `USD_VALUE_UNVERIFIED`: twak cannot value it (no USD price, a token it does
+  not know, `decimals` you supplied, any testnet token). Refused unless the
+  user allows such transactions.
+- `SLIPPAGE_EXCEEDED`: a swap's slippage is above the user's maximum (10% by
+  default, at most 50%). Keep the default 1% unless the user asks for more.
+  A quote is not limited by the maximum; its `warning` tells you when the
+  swap would be refused.
+- `NETWORK_ERROR` from a price or token lookup: retry later. Never a reason
+  to change a setting.
+
+When something is refused, tell the user what and why, and that they can
+change the limit if they want to. Change it only when they explicitly ask,
+with the CLI (same version and twak folder as the server; it applies to the
+running server without a restart):
+
+```bash
+TWAK_HOME=<twakHome> npx -y @trustwallet/cli@1 config set max-usd 50000 --json
+TWAK_HOME=<twakHome> npx -y @trustwallet/cli@1 config set max-slippage 20 --json
+TWAK_HOME=<twakHome> npx -y @trustwallet/cli@1 config set allow-unverified-value true --json
+TWAK_HOME=<twakHome> npx -y @trustwallet/cli@1 config unset max-usd --json
+```
+
+Then repeat the new value back to the user from the command's output, and
+say it applies to every later transaction until they change it. Do not set
+`TWAK_MAX_USD` / `TWAK_MAX_SLIPPAGE`, or pass `--max-usd` /
+`--skip-safety-check`, unless they ask for that. Details:
+`skills/wallet/references/limits.md`.
+
+Before every send, swap, approval or off-ramp transfer, check the balance,
+state exactly what will be sent, to whom, on which chain, and get the user's
+go-ahead. If the asset, amount, recipient or chain changes after that, state
+it again and wait for a new go-ahead. In WalletConnect mode, also:
 
 - Ask the user to **open the Trust Wallet app** to approve. No push
   notification is shown: the request appears only once the app is open. It
   expires after about 5 minutes.
 - `USER_REJECTED` means the user declined it in the app. Do not retry; ask
   them what to do.
+- If the call itself times out on your side (your host's limit on a tool
+  call, often shorter than those 5 minutes), the request was **not**
+  cancelled: it stays in the app, and approving it still sends the
+  transaction, since the wallet broadcasts it. Do not retry right away. Tell
+  the user, ask them to reject the pending request in the app (or to tell you
+  if they approved it), then check `get_transaction_history` and balances
+  before proposing a retry. A swap can send a token approval and then the
+  swap itself: check for both.
 - `WC_REQUEST_FAILED` means the wallet returned an error; report its message.
 - `WALLET_NOT_BOUND` means the connection ended: `get_wallet_status` shows
   why in `lastError`. Reconnect (section 2).
@@ -209,7 +263,7 @@ before writing anything:
   secrets did not reach the server: check the secret names and restart the
   connector again. Do not pair or create a wallet until this check passes.
 - Run every CLI command with the folder set explicitly:
-  `TWAK_HOME=/workspace/.twak npx -y @trustwallet/cli@0.24.3 ...`.
+  `TWAK_HOME=/workspace/.twak npx -y @trustwallet/cli@1 ...`.
 
 Other notes:
 
