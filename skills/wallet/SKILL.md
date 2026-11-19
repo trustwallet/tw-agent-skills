@@ -7,7 +7,7 @@ description: Trust Wallet CLI (`twak`) — install, create wallets, check balanc
 
 Command-line interface for multichain crypto wallet operations. Install with `npm install -g @trustwallet/cli`.
 
-If the Trust Wallet plugin's `twak` MCP server is running (see the `trust-wallet-mcp` skill), do not install the CLI or run `twak setup`: run commands with the same version as that server, `npx -y @trustwallet/cli@1 <command>`, and the same `TWAK_HOME`, since both use the same files.
+If the Trust Wallet plugin's `twak` MCP server is running (see the `trust-wallet-mcp` skill), do not install the CLI or run `twak setup`: run commands with the same version as that server, `npx -y @trustwallet/cli@2 <command>`, and the same `TWAK_HOME`, since both use the same files.
 
 ## Quick Start
 
@@ -24,7 +24,7 @@ Read the reference that matches the user's task:
 | Create wallet, keychain, sign, register | `references/wallet.md` | "create wallet", "keychain", "sign message", "wallet status", "register wallet with backend" |
 | Balance, holdings, portfolio | `references/balance.md` | "check balance", "portfolio", "token holdings" |
 | Send tokens, ENS transfers | `references/send.md` | "send ETH", "transfer to", "vitalik.eth" |
-| USD limit, maximum slippage, `twak config` | `references/limits.md` | `USD_LIMIT_EXCEEDED`, `USD_VALUE_UNVERIFIED`, `SLIPPAGE_EXCEEDED`, "raise the limit", "max slippage", "twak config" |
+| USD limit, maximum slippage, signing policy, `twak config` | `references/limits.md` | `USD_LIMIT_EXCEEDED`, `USD_VALUE_UNVERIFIED`, `SLIPPAGE_EXCEEDED`, `LOCAL_SIGNING_DISABLED`, `CONFIRMATION_REQUIRED`, `SIGNING_DENIED`, `SPEND_WINDOW_EXCEEDED`, "raise the limit", "max slippage", "twak config", "allowlist" |
 | Swap tokens, cross-chain | `references/swap.md` | "swap ETH for USDC", "bridge", "cross-chain swap" |
 | Buy/sell crypto with fiat | `references/onramp.md` | "buy ETH with USD", "onramp", "offramp", "fiat", "sell crypto for cash" |
 | Prices, trending, DApps | `references/market.md` | "price of", "trending tokens", "dapps" |
@@ -51,6 +51,7 @@ Read `references/setup.md` alongside any other reference if the CLI isn't instal
 - `--password <password>` — wallet password (falls back to `TWAK_WALLET_PASSWORD` env var, then OS keychain)
 - `--auto-lock <minutes>` — auto-lock the wallet after N minutes of inactivity
 - `--wc-project-id <id>` — WalletConnect project ID override (default: Trust Wallet's project; or set `WALLETCONNECT_PROJECT_ID`). A stored WalletConnect session (see `references/wallet.md`) is resumed at startup.
-- `--watch` — background watcher that fires DCA/limit automations; requires the local agent wallet (see `references/automations.md`)
+- `--allow-local-signing` — let the server sign with the local agent wallet, under the signing policy (see `references/limits.md`). Without it the local wallet can be read but not used to sign, and signing tools return `LOCAL_SIGNING_DISABLED`; sign with a connected phone wallet (WalletConnect) instead. No tool can turn it on.
+- `--watch` — background watcher that fires DCA/limit automations; requires the local agent wallet and `--allow-local-signing` (see `references/automations.md`)
 - `--watch-interval <duration>` — automation poll interval when `--watch` is set, e.g. `30s`, `5m`, `1h` (default 60s, min 5s)
-- `--read-only` — serve only tools that read (prices, quotes, balances, history, addresses), over MCP or REST. Tools that sign or change state are neither listed nor callable: calling one returns `READ_ONLY` (REST: 403). The wallet is fixed at startup (a resumed WalletConnect session, otherwise the local agent wallet), since `switch_wallet_mode` is not served. Cannot be combined with `--watch`.
+- `--read-only` — serve only tools that read (prices, quotes, balances, history, addresses), over MCP or REST. Tools that sign or change state are neither listed nor callable: calling one returns `READ_ONLY` (REST: 403). The wallet is fixed at startup (a resumed WalletConnect session, otherwise the local agent wallet), since `switch_wallet_mode` is not served. Cannot be combined with `--watch` or `--allow-local-signing`.

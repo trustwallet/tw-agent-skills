@@ -3,7 +3,7 @@
 
 Create recurring swaps (DCA) or conditional one-time swaps (limit orders) that execute automatically via `twak watch`.
 
-**Important:** Automations only execute while a watcher is polling — either a standalone `twak watch` process, or an MCP server started with `twak serve --watch`. Without one, rules are saved but never fire. If the watcher is stopped, automations are paused until it is started again.
+**Important:** Automations only execute while a watcher is polling — either a standalone `twak watch` process, or an MCP server started with `twak serve --allow-local-signing --watch`. Without one, rules are saved but never fire. If the watcher is stopped, automations are paused until it is started again.
 
 `automate add` requires exactly one of `--interval` (creates a DCA) or `--price` (creates a limit order) — both or neither is a `VALIDATION_ERROR`. Only EVM chains and Solana are supported; any other chain is rejected with `CHAIN_UNSUPPORTED` ("Use an EVM chain or Solana."). `--amount` must be a positive number.
 
@@ -115,17 +115,19 @@ twak watch --json            # structured output
 
 ## Running under the MCP server
 
-When driving twak over MCP (`twak serve`), automations created with the `create_automation` action only execute if the server was launched with `--watch`.
+When driving twak over MCP (`twak serve`), automations created with the `create_automation` action only execute if the server was launched with `--watch` and local signing on (`--allow-local-signing`), and only once the user approved them.
 
 ```bash
-twak serve --watch                      # polls every 60s by default
-twak serve --watch --watch-interval 5m  # custom poll interval
+twak serve --allow-local-signing --watch                      # polls every 60s by default
+twak serve --allow-local-signing --watch --watch-interval 5m  # custom poll interval
+twak automate approve <id>                                    # approve a rule an agent created
 ```
 
 Without `--watch` (or a separate `twak watch` process), automations are saved but never fire.
 
 - Automations execute using the local agent wallet; the watcher stays idle in WalletConnect mode, where each swap needs interactive approval.
-- To execute a saved automation once immediately, use the `run_automation_now` action.
+- To execute a saved automation once immediately, use the `run_automation_now` action. It is not pre-approved: it goes through the signing policy like any swap (`references/limits.md`).
+- Automations created through MCP are saved unapproved and stay idle until the user runs `twak automate approve <id>`. Automations created with the CLI are approved when created.
 - Don't run both `twak serve --watch` and `twak watch` against the same wallet / `automations.json` — both loops would fire the same automation.
 
 ## Storage
