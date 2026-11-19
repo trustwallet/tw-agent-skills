@@ -69,11 +69,12 @@ not pair or create a wallet before they do.
 
 The agent wallet signs only when the server was started with local signing
 on (`localSigning` is `guarded`). When it is `disabled`, every signing tool
-returns `LOCAL_SIGNING_DISABLED`: tell the user, who can connect the Trust
-Wallet app instead, or restart the server with `twak serve
---allow-local-signing`. You cannot turn local signing on: no tool does, so
-never edit the server's configuration or restart it with that flag on your
-own.
+returns `LOCAL_SIGNING_DISABLED`: tell the user. They can connect the Trust
+Wallet app instead, or turn local signing on themselves by adding
+`--allow-local-signing` to the arguments of the `twak serve` command in their
+MCP configuration and restarting their host. You cannot turn local signing
+on: no tool does, so never edit the server's configuration or restart it with
+that flag on your own; give the user these steps and let them do it.
 
 Automations (DCA, limit orders) need the agent wallet, local signing, the
 user's approval of the rule (`twak automate approve <id>`) **and** a running
