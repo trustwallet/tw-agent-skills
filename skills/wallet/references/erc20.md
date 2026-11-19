@@ -110,7 +110,7 @@ With `--json`, errors emit a single `{ error, errorCode }` object to stdout and 
 ## Safety Notes
 
 - Always verify the spender address is the correct contract
-- Prefer exact amounts over `unlimited` — unlimited approvals are a common attack surface
+- Prefer exact amounts over `unlimited` — unlimited approvals are a common attack surface. Over MCP, `approve_token` with `unlimited` (or any amount of 2^128 or more) is refused with `SIGNING_DENIED` unless the user allows it, and an approval to a spender that is not on the user's allowlist asks for their confirmation (`references/limits.md`)
 - Use `erc20 revoke` to remove approvals you no longer need
 - Check existing allowance before approving to avoid redundant transactions
 

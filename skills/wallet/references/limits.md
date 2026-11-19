@@ -22,6 +22,33 @@ A swap accepts any output down to `quote × (1 − slippage)`, so the slippage t
 - Quotes (`twak swap … --quote-only --slippage <pct>`, MCP `get_swap_quote` with `slippage`) sign nothing and are not limited by the maximum, only by the 50% limit. Their `minReceived` shows what that slippage allows; MCP `get_swap_quote` adds a `warning` when a swap at that slippage would be refused.
 - Above 5%, a swap carries a high-slippage warning.
 
+## Signing policy (`twak serve --allow-local-signing`)
+
+`twak serve` does not sign with the local agent wallet unless it is started with `--allow-local-signing`; without it, signing tools return `LOCAL_SIGNING_DISABLED` (REST: 403). With it, the server decides each local signature against the user's policy, in the server process, not in the agent:
+
+| What | Outcome |
+|------|---------|
+| Swap or x402 payment worth up to `auto-approve-max-usd` ($10 by default), while the rolling 24-hour total of such actions stays within `auto-approve-window-usd` ($50) | Runs without asking |
+| Transfer to an `allowed-destination`, or finite approval to an `allowed-spender`, within the same limits | Runs without asking |
+| Revoking an approval (amount 0) | Runs |
+| Anything larger, anything twak cannot value in USD, any contract call or signature outside a swap or payment | Asks the user in a confirmation prompt |
+| Unlimited approval (2^128 or more) | `SIGNING_DENIED`, unless `allow-unlimited-approvals` is set (then each one asks) |
+| Total above `window-max-usd` in 24 hours ($10,000) | `SPEND_WINDOW_EXCEEDED` |
+
+When the host cannot show a confirmation prompt (an MCP client without elicitation, REST, the watcher), what needs one returns `CONFIRMATION_REQUIRED`; a declined prompt returns `USER_REJECTED`. Automations run only after the user approves them (`twak automate approve <id>`).
+
+```bash
+twak config set auto-approve-max-usd 25               # per action, in USD (0 = ask every time)
+twak config set auto-approve-window-usd 100           # rolling 24 hours, in USD
+twak config set window-max-usd 5000                   # hard 24-hour cap
+twak config set allow-unlimited-approvals true        # default false; each one still asks
+twak config add allowed-destination 0x…               # transfers to this address can run unattended
+twak config add allowed-spender 0x…                   # finite approvals to this spender can run unattended
+twak config remove allowed-destination 0x…
+```
+
+These settings live in `settings.json` and change only through `twak config`; no MCP or REST tool reads or writes them.
+
 ## Settings: `twak config`
 
 ```bash
@@ -40,6 +67,6 @@ twak config unset max-usd                         # back to the default
 
 ## Rules for an agent
 
-- **Never change a setting, set `TWAK_MAX_USD` / `TWAK_MAX_SLIPPAGE`, or pass `--max-usd` / `--skip-safety-check` on your own initiative**, including to get a refused transaction through. When something is refused, tell the user what and why, and that they can change the setting if they want to.
+- **Never change a setting, add an allowlist entry, set `TWAK_MAX_USD` / `TWAK_MAX_SLIPPAGE`, pass `--max-usd` / `--skip-safety-check`, or restart the server with `--allow-local-signing` on your own initiative**, including to get a refused transaction through. When something is refused, tell the user what and why, and that they can change the setting if they want to.
 - Change a setting only when the user explicitly asks for it. Then repeat the new value back to them (from `twak config get --json`), and mention it applies to every later transaction until changed.
 - Prefer the narrowest change: a higher `max-usd` rather than `allow-unverified-value`, and `twak config unset` to go back to the default when the user is done.

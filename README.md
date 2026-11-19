@@ -34,9 +34,33 @@ npx skills add trustwallet/tw-agent-skills -s api
 This repository is also a Cursor Marketplace plugin (`.cursor-plugin/plugin.json`), which Grok Bot installs from its Connect apps. It bundles these skills and the `twak` MCP server (`npx -y @trustwallet/cli@<version> serve`, pinned in `mcp.json`). The [`mcp`](skills/mcp/SKILL.md) skill guides the agent through setup and two ways of signing:
 
 - **Trust Wallet app (WalletConnect)**, recommended: keys stay in the user's Trust Wallet app, which approves every transaction.
-- **Agent wallet**: a new, separate wallet the agent signs with, without approval, and the user funds. Never give an agent your main wallet's recovery phrase.
+- **Agent wallet**: a new, separate wallet the agent signs with, within a signing policy the user sets (small amounts run, anything larger asks for confirmation), and the user funds. Signing with it needs the server started with `--allow-local-signing`. Never give an agent your main wallet's recovery phrase.
 
 On Grok Bot (personal Bots only), the skill has the user add Bot secrets (API credentials, `TWAK_HOME=/workspace/.twak` so twak's files stay in Grok's durable folder, and the agent wallet password), then checks the server picked them up before pairing or creating a wallet.
+
+## Upgrading to twak 2.0
+
+twak 2.0 changes how `twak serve` (the MCP and REST server) signs. This plugin uses `@trustwallet/cli@2`; anyone who stays on `@1` keeps the 1.x behaviour.
+
+- **Local signing is off by default.** Without `--allow-local-signing`, the local agent wallet can be read (addresses, balances, history) but not used to sign. Signing tools return `LOCAL_SIGNING_DISABLED`.
+- **With it on, signing follows a policy** set by the user with `twak config`: small valued swaps and payments, and transfers to allowlisted addresses, run within limits; everything else asks for the user's confirmation, and unlimited token approvals are refused. See [`limits.md`](skills/wallet/references/limits.md).
+- **Third-party text is labelled.** Token names, swap routes, x402 responses and similar content come back under an `untrusted` field and are data, never instructions.
+- **Automations** run only after the user approves them (`twak automate approve <id>`).
+
+To let the agent sign with the local wallet, add `--allow-local-signing` to the server's arguments and restart the host:
+
+```json
+{
+  "mcpServers": {
+    "twak": {
+      "command": "npx",
+      "args": ["-y", "@trustwallet/cli@2", "serve", "--allow-local-signing"]
+    }
+  }
+}
+```
+
+Outside this plugin, `npx -y @trustwallet/cli@2 setup` also asks whether to allow it. To approve every transaction on your phone instead, connect the Trust Wallet app (WalletConnect). CLI commands you run yourself, and the SDK, are unchanged.
 
 ## Prerequisites
 
