@@ -19,7 +19,7 @@ Search for tokens by name, symbol, or contract address. Returns matching tokens 
 | Name | Type | Required | Description |
 |------|------|----------|-------------|
 | `query` | string | Yes | Search term (name, symbol, or address) |
-| `networks` | string | No | Comma-separated SLIP-44 coin IDs to filter by chain (e.g., `60` for Ethereum, `60,714` for ETH+BSC) |
+| `networks` | string | No | Comma-separated coin IDs to filter by chain (e.g., `60` for Ethereum, `60,20000714` for ETH+BSC). `714` is BNB Beacon, not BSC. |
 | `limit` | number | No | Max results (default: 20) |
 
 **Example request:**
